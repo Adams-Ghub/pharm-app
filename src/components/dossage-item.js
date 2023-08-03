@@ -2,8 +2,20 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import Dropdown from 'react-native-input-select';
 
-export default function DossageItem() {
-  const [country, setCountry] = useState('tablet');
+
+export default function DossageItem({
+  onMedicineChange,
+  onAmtNumberChange,
+  onAmtTypeChange,
+  onFreqWordsChange,
+  onFreqNumberChange,
+}) {
+  
+  const [medicine, setMedicine] = useState();
+  const [amtNumber, setAmtNumber] = useState();
+  const [amtType, setAmtType] = useState();
+  const [FreqNumber, setFreqNumber] = useState();
+  const [freqWords, setFreqWords] = useState();
   return (
     <View style={styles.mainContainer}>
       <View style={styles.medicineContainer}>
@@ -11,21 +23,38 @@ export default function DossageItem() {
         <TextInput
           style={styles.medicineInput}
           placeholder="Eg. Paracetamol syrup"
+          onChangeText={(text) => onMedicineChange(text)}
         />
       </View>
       <View style={styles.amountContainer}>
         <Text style={[styles.amountText, styles.allText]}>amount</Text>
         <View style={styles.amountInputContainer}>
-          <TextInput style={styles.amountInput} placeholder="1" />
-          <TextInput style={styles.amountTypeInput} placeholder="tablet" />
+          <TextInput
+            style={styles.amountInput}
+            placeholder="1"
+            onChangeText={(text) => onAmtNumberChange(text)}
+          />
+          <TextInput
+            style={styles.amountTypeInput}
+            placeholder="tablet"
+            onChangeText={(text) => onAmtTypeChange(text)}
+          />
         </View>
       </View>
       <View style={styles.frequencyContainer}>
         <Text style={[styles.frequencyText, styles.allText]}>frequency</Text>
         <View style={styles.frequencyInputContainer}>
-          <TextInput style={styles.frequencyNumOfTimes} placeholder="3" />
+          <TextInput
+            style={styles.frequencyNumOfTimes}
+            placeholder="3"
+            onChangeText={(text) => onFreqNumberChange(text)}
+          />
           <Text>x</Text>
-          <TextInput style={styles.frequencyOption} placeholder="daily" />
+          <TextInput
+            style={styles.frequencyOption}
+            placeholder="daily"
+            onChangeText={(text) => onFreqWordsChange(text)}
+          />
         </View>
       </View>
     </View>
@@ -56,7 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     gap: 1,
-    width:'100%'
+    width: '100%',
   },
   frequencyNumOfTimes: {
     flex: 0.25,
@@ -73,12 +102,12 @@ const styles = StyleSheet.create({
   allText: {
     fontSize: 15,
     color: '#000',
-    fontWeight:'500',
+    fontWeight: '500',
   },
   medicineText: {
     fontSize: 15,
     color: '#000',
-    fontWeight:'500',
+    fontWeight: '500',
   },
   medicineInput: {
     borderStyle: 'solid',
@@ -94,7 +123,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 1,
     alignItems: 'center',
-    width:'100%'
+    width: '100%',
   },
   amountInput: {
     borderStyle: 'solid',
@@ -111,3 +140,4 @@ const styles = StyleSheet.create({
     width: '70%',
   },
 });
+
