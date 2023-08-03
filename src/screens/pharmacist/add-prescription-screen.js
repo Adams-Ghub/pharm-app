@@ -2,15 +2,123 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import DossageItem from '../../components/dossage-item';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import SearchableDropdown from 'react-native-searchable-dropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { GetAllUsers } from '../../../redux/users/usersActions';
+import { format } from 'date-fns';
 
 export default function AddPrescriptionScreen() {
-  const [dosageItems, setDosageItems] = useState([]);
+  const [dosageItems, setDosageItems] = useState(
+    () => {
+      // Initialize dosageItems with five DossageItem components
+      return Array.from({ length: 5 }, (_, index) => (
+        <DossageItem
+          key={index}
+          onMedicineChange={(value) => handleMedicineChange(index, value)}
+        onAmtNumberChange={(value) =>  handleAmtNumberChange (index, value)}
+        onAmtTypeChange={(value) => handleAmtTypeChange(index, value)}
+        onFreqNumberChange={(value) => handleFreqNumberChange(index, value)}
+        onFreqWordsChange={(value) => handleFreqWordsChange(index, value)}
+        />
+      ));
+    }
+  );
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [dosageData, setDosageData] = useState([]);
+  const dispatch = useDispatch();
+
+  // const { allUsers } = useSelector((state) => state.users);
+  // dispatch(GetAllUsers());
+
+  // console.log("allUsers:",allUsers);
+
+  // const userData=allUsers.map((user)=>{
+  //  return {Id:user.id, name:user.name}
+  // })
+
+  const customers = [
+    { id: 1, name: 'Sandra Momo' },
+    { id: 2, name: 'Sandra Mensah' },
+    { id: 3, name: 'Stephen Oduro' },
+    // Add more options as needed
+  ];
+
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleDateChange = (event, date) => {
+    setShowDatePicker(false);
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
+  const handleMedicineChange = (index, value) => {
+    // Update the medicine value for the corresponding DosageItem in the dosageData array
+    setDosageData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], medicine: value };
+      return newData;
+    });
+  };
+
+ 
 
   const addDosageItem = () => {
     setDosageItems((prevDosageItems) => [
       ...prevDosageItems,
-      <DossageItem key={prevDosageItems.length} />,
+      <DossageItem
+        key={prevDosageItems.length}
+        onMedicineChange={(value) => handleMedicineChange(prevDosageItems.length, value)}
+        onAmtNumberChange={(value) =>  handleAmtNumberChange (prevDosageItems.length, value)}
+        onAmtTypeChange={(value) => handleAmtTypeChange(prevDosageItems.length, value)}
+        onFreqNumberChange={(value) => handleFreqNumberChange(prevDosageItems.length, value)}
+        onFreqWordsChange={(value) => handleFreqWordsChange(prevDosageItems.length, value)}
+      />,
     ]);
+
+    // Add an empty data object for the new DosageItem to dosageData array
+    setDosageData((prevData) => [...prevData, {}]);
+  };
+
+  const handleAmtNumberChange = (index, value) => {
+    // Update the medicine value for the corresponding DosageItem in the dosageData array
+    setDosageData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], AmtNumber: value };
+      return newData;
+    });
+  };
+
+  const handleAmtTypeChange = (index, value) => {
+    // Update the medicine value for the corresponding DosageItem in the dosageData array
+    setDosageData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], AmtType: value };
+      return newData;
+    });
+  };
+
+  const handleFreqNumberChange = (index, value) => {
+    // Update the medicine value for the corresponding DosageItem in the dosageData array
+    setDosageData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], FreqNumber: value };
+      return newData;
+    });
+  };
+
+  const handleFreqWordsChange = (index, value) => {
+    // Update the medicine value for the corresponding DosageItem in the dosageData array
+    setDosageData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], FreqWords: value };
+      return newData;
+    });
   };
 
   return (
@@ -19,11 +127,54 @@ export default function AddPrescriptionScreen() {
         <Text style={styles.prescriptionFormTitle}>Prescription Form</Text>
       </View>
       <View>
-        <TextInput
-          placeholder="select customer"
-          style={styles.selectCustomerInput}
-        />
-        <TextInput placeholder="date" style={styles.dateInput} />
+        <View>
+          <Text style={styles.selectCustomerText}>Customer</Text>
+          <SearchableDropdown
+            onTextChange={(text) => console.log(text)}
+            onItemSelect={handleSelectItem}
+            containerStyle={{ marginBottom: 10 }}
+            textInputStyle={{
+              paddingHorizontal: 3,
+              borderWidth: 1,
+              borderColor: '#000',
+              borderRadius: 5,
+            }}
+            itemStyle={{
+              padding: 3,
+              marginTop: 2,
+              backgroundColor: '#ddd',
+              borderColor: '#bbb',
+              borderWidth: 1,
+              borderRadius: 5,
+            }}
+            itemTextStyle={{ color: '#222' }}
+            itemsContainerStyle={{ maxHeight: 140 }}
+            items={customers}
+            placeholder={selectedItem ? selectedItem.name : ''}
+            placeholderTextColor="#000"
+            resetValue={false}
+            underlineColorAndroid="transparent"
+            value={selectedItem ? selectedItem.name : ''}
+          />
+        </View>
+        <View>
+          <Text style={styles.dateText}>Date</Text>
+          <TouchableOpacity
+            style={styles.dateInput}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text>{format(selectedDate, 'dd/MM/yyyy')}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              is24Hour={true}
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </View>
       </View>
       <View style={styles.patientInfoLabelInputContainer}>
         <Text style={styles.patientInfoLabel}>Patient info</Text>
@@ -37,11 +188,11 @@ export default function AddPrescriptionScreen() {
         <Text style={styles.medicationAndDosageTitle}>Medication & Dosage</Text>
 
         <ScrollView style={styles.dossageItemContainer}>
+          {/* <DossageItem onAmtNumberChange={()=>}/>
           <DossageItem />
           <DossageItem />
           <DossageItem />
-          <DossageItem />
-          <DossageItem />
+          <DossageItem /> */}
           {dosageItems.map((dosageItem, index) => (
             <View key={index}>{dosageItem}</View>
           ))}
@@ -51,7 +202,7 @@ export default function AddPrescriptionScreen() {
         </ScrollView>
       </View>
       <View style={styles.createPrescriptionBtnContainer}>
-        <TouchableOpacity style={styles.createPrescriptionBtn}>
+        <TouchableOpacity style={styles.createPrescriptionBtn} onPress={()=>console.log("DosageData: ",dosageData)}>
           <Text style={styles.prescriptionBtnText}>create prescription</Text>
         </TouchableOpacity>
       </View>
@@ -73,26 +224,30 @@ const styles = StyleSheet.create({
     color: '#03C043',
     marginBottom: 5,
   },
-  selectCustomerInput: {
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 4,
+  selectCustomerText: {
     paddingHorizontal: 4,
-    fontSize: 17,
-    marginBottom:7
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 0,
+  },
+  dateText:{
+    fontSize:18,
+    fontWeight:'600'
   },
   dateInput: {
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 4,
     paddingHorizontal: 4,
+    paddingVertical:5,
     fontSize: 17,
-    marginBottom:7
+    marginBottom: 7,
+  
   },
-  patientInfoLabel:{
-    fontSize:17,
+  patientInfoLabel: {
+    fontSize: 17,
     fontWeight: '600',
-    marginTop:4
+    marginTop: 4,
   },
   patientInfoInput: {
     borderStyle: 'solid',
@@ -100,21 +255,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 4,
     fontSize: 15,
-    marginBottom:15
+    marginBottom: 15,
   },
-  medicationAndDosageTitle:{
-    fontSize:17,
-    fontWeight:'600'
+  medicationAndDosageTitle: {
+    fontSize: 17,
+    fontWeight: '600',
   },
-  moreMedicationText:{
-    color:'#03C043',
-    fontSize:15
+  moreMedicationText: {
+    color: '#03C043',
+    fontSize: 15,
   },
   dossageItemContainer: {
     flex: 0,
     // justifyContent: 'flex-start',
     width: '100%',
-    height: '62%',
+    height: '52%',
   },
   createPrescriptionBtn: {
     flex: 0,

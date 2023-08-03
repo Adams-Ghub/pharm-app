@@ -40,7 +40,7 @@ dateText: {
 customerText: {
   color: '#000',
   fontSize: 18,
-  fontWeight: 700,
+  fontWeight: '700',
 },
 medincineText: {
   fontSize: 15,

@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   idDateContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom:3
+    marginBottom: 3,
   },
   idText: {
     color: '#000',
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   customerText: {
     color: '#000',
     fontSize: 18,
-    fontWeight: 700,
+    fontWeight: '700',
   },
   medincineText: {
     fontSize: 15,
