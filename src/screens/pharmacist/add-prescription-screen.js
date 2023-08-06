@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, StyleSheet, Text, TextInput } from 'react-native';
 import DossageItem from '../../components/dossage-item';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -6,7 +6,10 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { GetAllUsers } from '../../../redux/users/usersActions';
+import {AddPrescription} from '../../../redux/prescriptions/prescriptionActions';
+import * as Crypto from 'expo-crypto';
 import { format } from 'date-fns';
+import Modal from 'react-native-modal';
 
 export default function AddPrescriptionScreen() {
   const [dosageItems, setDosageItems] = useState(
@@ -28,27 +31,65 @@ export default function AddPrescriptionScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedItem, setSelectedItem] = useState(null);
   const [dosageData, setDosageData] = useState([]);
+  const [patientInfo, setPatientInfo] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
-  // const { allUsers } = useSelector((state) => state.users);
-  // dispatch(GetAllUsers());
+  const { allUsers,loading, user} = useSelector((state) => state.users);
+  // const { message} = useSelector((state) => state.prescription);
+  
+  useEffect(() => {
+    dispatch(GetAllUsers());
+  }, []);
+
+  //Modal dialog 
+  // useEffect(() => {
+  //   if (message!==null) {
+  //     setModalVisible(true);
+  //   }
+  // }, [message]);
+
+  // const handleModalClose = () => {
+  //   setModalVisible(false);
+    
+  // };
+
+//Modal dialog ends
 
   // console.log("allUsers:",allUsers);
 
-  // const userData=allUsers.map((user)=>{
-  //  return {Id:user.id, name:user.name}
-  // })
-
-  const customers = [
-    { id: 1, name: 'Sandra Momo' },
-    { id: 2, name: 'Sandra Mensah' },
-    { id: 3, name: 'Stephen Oduro' },
-    // Add more options as needed
-  ];
+  let customers=[];
+  allUsers.map((user)=>{
+    if(user.role=='customer'){
+      customers=[...customers,{id:user.id,name:user.name} ]
+    }   
+  })
+console.log('filteredCustomers',customers)
+  // const customers = [
+  //   { id: 1, name: 'Sandra Momo' },
+  //   { id: 2, name: 'Sandra Mensah' },
+  //   { id: 3, name: 'Stephen Oduro' },
+  //   // Add more options as needed
+  // ];
 
   const handleSelectItem = (item) => {
     setSelectedItem(item);
   };
+
+  const handleAddPrescription = ()=>{
+    if (!selectedItem) {
+      console.log('Please select a customer before creating the prescription.');
+      return;
+    }
+    dispatch(AddPrescription({ 
+      id:Crypto.randomUUID().slice(-12),
+      customerId:selectedItem.id,
+      customer:selectedItem.name,           
+      pharmacistId:user.id,
+      prescription:dosageData,
+      patientInfo:patientInfo,
+      date:format(selectedDate, 'dd/MM/yyyy')}));
+  }
 
   const handleDateChange = (event, date) => {
     setShowDatePicker(false);
@@ -120,8 +161,8 @@ export default function AddPrescriptionScreen() {
       return newData;
     });
   };
-
-  return (
+  
+   return(
     <View style={styles.mainContainer}>
       <View>
         <Text style={styles.prescriptionFormTitle}>Prescription Form</Text>
@@ -163,7 +204,7 @@ export default function AddPrescriptionScreen() {
             style={styles.dateInput}
             onPress={() => setShowDatePicker(true)}
           >
-            <Text>{format(selectedDate, 'dd/MM/yyyy')}</Text>
+          <Text>{format(selectedDate, 'dd/MM/yyyy')}</Text>
           </TouchableOpacity>
           {showDatePicker && (
             <DateTimePicker
@@ -181,6 +222,7 @@ export default function AddPrescriptionScreen() {
         <TextInput
           placeholder="Eg. John Kingston, 2yrs, 10Kg"
           style={styles.patientInfoInput}
+          onChangeText={(text)=>setPatientInfo(text)}
         />
       </View>
 
@@ -188,11 +230,7 @@ export default function AddPrescriptionScreen() {
         <Text style={styles.medicationAndDosageTitle}>Medication & Dosage</Text>
 
         <ScrollView style={styles.dossageItemContainer}>
-          {/* <DossageItem onAmtNumberChange={()=>}/>
-          <DossageItem />
-          <DossageItem />
-          <DossageItem />
-          <DossageItem /> */}
+          
           {dosageItems.map((dosageItem, index) => (
             <View key={index}>{dosageItem}</View>
           ))}
@@ -202,13 +240,16 @@ export default function AddPrescriptionScreen() {
         </ScrollView>
       </View>
       <View style={styles.createPrescriptionBtnContainer}>
-        <TouchableOpacity style={styles.createPrescriptionBtn} onPress={()=>console.log("DosageData: ",dosageData)}>
+        <TouchableOpacity style={styles.createPrescriptionBtn} 
+        onPress={()=>handleAddPrescription()}
+        >
           <Text style={styles.prescriptionBtnText}>create prescription</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -290,4 +331,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
+  //modal styling begins
+  modalContainer: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalButton: {
+    backgroundColor: '#03C043',
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  //modal styling ends
+
 });

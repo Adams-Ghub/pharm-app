@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native'
 import PrescriptionItem from '../../components/prescription-item';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionActions';
 
-export default function PrescriptionScreen({navigation}) {
-  prescribtions = [
+export default function PrescriptionScreen({ navigation }) {
+  const prescribtions = [
     {
       Id: '7ae458o90',
       name: 'Sandra Momo Mensah',
@@ -73,6 +76,21 @@ export default function PrescriptionScreen({navigation}) {
       medicines: 'Paracetamol, Citro-C',
     },
   ];
+
+  //Get all prescription start
+  const { prescriptions,loading } = useSelector((state) => state.prescription);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(GetAllPrescription());
+  }, []);
+  //Get all prescription ends
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(GetAllPrescription());
+    }, [])
+  );
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.filterSection}>
@@ -96,24 +114,32 @@ export default function PrescriptionScreen({navigation}) {
       </View>
 
       <View style={styles.bottomSection}>
-        <FlatList
-          data={prescribtions}
-          renderItem={({ item }) => {
-            return (
-              <PrescriptionItem
-                Id={item.Id}
-                customer={item.name}
-                medicine={item.medicines}
-                date={item.Date}
-              />
-            );
-          }}
-        />
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : prescriptions==[]?<Text>No prescriptions available!!</Text>:(
+          <FlatList
+            data={prescriptions}
+            renderItem={({ item }) => {
+              
+              return (
+                <PrescriptionItem
+                  Id={item.id}
+                  customer={item.customer}
+                  medicine={ 
+                       item.prescription[0].medicine
+                  }
+                  date={item.date}
+                />
+              );
+            }}
+          />
+        )}
       </View>
       <View>
-        <TouchableOpacity style={styles.createPrescriptionButton}
-          onPress={()=>{
-            navigation.navigate('AddPrescription')
+        <TouchableOpacity
+          style={styles.createPrescriptionButton}
+          onPress={() => {
+            navigation.navigate('AddPrescription');
           }}
         >
           <AntDesign
@@ -133,13 +159,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: '#fff',
-
   },
   filterSection: {
     flex: 0.1,
     flexDirection: 'row',
     gap: 3,
-    paddingHorizontal:10
+    paddingHorizontal: 10,
   },
   byIdContainer: {
     flex: 0.2,
@@ -168,7 +193,7 @@ const styles = StyleSheet.create({
 
   bottomSection: {
     flex: 0.9,
-    marginHorizontal:10
+    marginHorizontal: 10,
   },
   allInput: {
     borderStyle: 'solid',
