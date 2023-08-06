@@ -18,14 +18,14 @@ export default function Signup({ navigation }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [role, setRole] = useState('customer');
-  const [phone, setPhone] = useState();
+  const [name, setName] = useState();
   const [registration, setRegistration] = useState('none');
   const [isModalVisible, setModalVisible] = useState(false);
   
   const { currentUser } = useSelector((state) => state.users);
 
   const handleSignUp =  () => {
-  dispatch(RegisterUser({ email, password, role, phone, registration }));
+  dispatch(RegisterUser({ email, password, role, name, registration }));
   
   };
 
@@ -36,8 +36,8 @@ export default function Signup({ navigation }) {
   }, [currentUser]);
 
   const handleModalClose = () => {
-    setModalVisible(false);
     navigation.navigate('Login');
+    setModalVisible(false);
   };
 
 
@@ -63,11 +63,11 @@ export default function Signup({ navigation }) {
         <Text style={styles.headingText}>Signup</Text>
       </View>
       <ScrollView style={styles.bottomSection}>
-        <View style={styles.phoneLabelInputContainer}>
-          <Text style={styles.phoneText}>Phone</Text>
+        <View style={styles.nameLabelInputContainer}>
+          <Text style={styles.nameText}>Name</Text>
           <TextInput
-            style={styles.phoneInput}
-            onChangeText={(text) => setPhone(text)}
+            style={styles.nameInput}
+            onChangeText={(text) => setName(text)}
           />
         </View>
         <View style={styles.emailLabelInputContainer}>
@@ -186,20 +186,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
-  phoneLabelInputContainer: {
+  nameLabelInputContainer: {
     borderStyle: 'solid',
     borderBottomWidth: 1,
     borderBottomColor: '#03C043',
     marginBottom: 20,
   },
-  phoneText: {
+  nameText: {
     fontSize: 15,
     fontWeight: '600',
     color: '#565656',
     paddingLeft: 10,
     marginBottom: 10,
   },
-  phoneInput: {
+  nameInput: {
     paddingLeft: 10,
     color: '#050505',
     fontSize: 18,
@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
+//modal styling begins
   modalContainer: {
     backgroundColor: 'white',
     borderRadius: 8,
@@ -313,4 +314,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  //modal styling ends
 });
