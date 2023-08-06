@@ -10,17 +10,23 @@ import {
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserLogin } from '../../redux/users/usersActions';
-// import {NavigationContainer} from '@react-navigation/native'
+import Modal from 'react-native-modal';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.users);
 
   const handleLogin = () => {
     dispatch(UserLogin({email, password}));
     console.log('email/password:', email + '/' + password);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    navigation.navigate('Login');
   };
 
   useEffect(() => {
@@ -78,6 +84,14 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Modal isVisible={isModalVisible}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>User signed up successfully!</Text>
+          <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
+            <Text style={styles.modalButtonText}>OK</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -187,5 +201,27 @@ const styles = StyleSheet.create({
     color: '#03C043',
     fontSize: 18,
     marginVertical: 2,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  modalButton: {
+    backgroundColor: '#03C043',
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
