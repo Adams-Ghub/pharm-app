@@ -1,7 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import{ AddPrescription,GetAllPrescription} from './prescriptionActions'; 
 
 const initialState = {
-  users: [],
+  prescriptions: [],
+  loading:false,
+  message:null,
+  error:null
 };
 
 const prescriptionSlice = createSlice(
@@ -9,8 +13,26 @@ const prescriptionSlice = createSlice(
     name: 'prescription',
     initialState,
     reducers: {
-      checkStatus: (state, action) => { state.categoryList = action.payload === 'Under construction' ? 'Under construction' : state.categoryList; },
-
+    },
+    extraReducers: (builder) => {
+      builder
+        .addCase(AddPrescription.fulfilled, (state, action) => {
+          state.currentUser = action.payload;
+          state.message = 'prescription successfully added'
+        })
+        .addCase(AddPrescription.rejected, (state, action) => {
+          state.error = action.payload;
+        })
+        .addCase(GetAllPrescription.pending, (state, action) => {
+          state.loading=true
+        })
+        .addCase(GetAllPrescription.fulfilled, (state, action) => {
+          state.prescriptions = action.payload;
+          state.loading=false
+        })
+        .addCase(GetAllPrescription.rejected, (state, action) => {
+          state.error = action.payload;
+        });
     },
   },
 );
