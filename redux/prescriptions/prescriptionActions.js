@@ -5,7 +5,7 @@ import { db } from '../../firebase/firebase.js';
 const AddPrescription = createAsyncThunk(
   'addPrescription',
   async (
-    { id, customerId, pharmacistId, prescription, date, patientInfo, customer },
+    { id, customerId, pharmacistId, pharmacy,prescription, date, patientInfo, customer },
     { rejectWithValue }
   ) => {
     try {
@@ -14,6 +14,7 @@ const AddPrescription = createAsyncThunk(
         customerId,
         customer,
         pharmacistId,
+        pharmacy,
         patientInfo,
         prescription,
         date,

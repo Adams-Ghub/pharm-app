@@ -64,7 +64,7 @@ export default function AddPrescriptionScreen() {
       customers=[...customers,{id:user.id,name:user.name} ]
     }   
   })
-console.log('filteredCustomers',customers)
+
   // const customers = [
   //   { id: 1, name: 'Sandra Momo' },
   //   { id: 2, name: 'Sandra Mensah' },
@@ -81,10 +81,13 @@ console.log('filteredCustomers',customers)
       console.log('Please select a customer before creating the prescription.');
       return;
     }
+
+    console.log('pharmacy: ',user.pharmacy)
     dispatch(AddPrescription({ 
       id:Crypto.randomUUID().slice(-12),
       customerId:selectedItem.id,
-      customer:selectedItem.name,           
+      customer:selectedItem.name,
+      pharmacy:user.details.pharmacy,           
       pharmacistId:user.id,
       prescription:dosageData,
       patientInfo:patientInfo,
@@ -230,7 +233,11 @@ console.log('filteredCustomers',customers)
         <Text style={styles.medicationAndDosageTitle}>Medication & Dosage</Text>
 
         <ScrollView style={styles.dossageItemContainer}>
-          
+          {/* <DossageItem onAmtNumberChange={()=>}/>
+          <DossageItem />
+          <DossageItem />
+          <DossageItem />
+          <DossageItem /> */}
           {dosageItems.map((dosageItem, index) => (
             <View key={index}>{dosageItem}</View>
           ))}
