@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import ClientDossageTemplate from '../../components/client-dossage-template';
 import ClientFeedbackUser from '../../components/feedbackuser';
+import * as Notifications from 'expo-notifications';
 
 function ClientWelcomeScreen() {
   const users = [
@@ -21,6 +22,14 @@ function ClientWelcomeScreen() {
       pharmacy: 'Sikwa Pharmacy',
     },
   ];
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
   return (
     <View style={styles.principalContainer}>
       <View style={styles.latestDossageSection}>
@@ -38,11 +47,11 @@ function ClientWelcomeScreen() {
             data={users}
             renderItem={({ item }) => {
               return (
-                 <ClientFeedbackUser
-                user={item.name}
-                lastChatDate={item.lastChatDate}
-                pharmacy={item.pharmacy}
-              />
+                <ClientFeedbackUser
+                  user={item.name}
+                  lastChatDate={item.lastChatDate}
+                  pharmacy={item.pharmacy}
+                />
               );
             }}
             keyExtractor={(item) => item.index}
@@ -57,19 +66,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     width: '100%',
-    justifyContent:'space-between',
-    gap:10
-    
+    justifyContent: 'space-between',
+    gap: 10,
   },
   latestDossageSection: {
     flex: 0.45,
-    marginHorizontal:15
+    marginHorizontal: 15,
   },
 
   latestDossageText: {
     padding: 0,
     marginTop: 10,
-    marginBottom:4,
+    marginBottom: 4,
     color: '#03C043',
     fontSize: 20,
     fontWeight: '600',
@@ -88,8 +96,8 @@ const styles = StyleSheet.create({
   },
   feedbacksContianer: {
     flexDirection: 'column',
-    marginHorizontal:15,
-    marginTop:5
+    marginHorizontal: 15,
+    marginTop: 5,
   },
 });
 
