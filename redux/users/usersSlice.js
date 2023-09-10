@@ -1,13 +1,14 @@
 // userSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import { GetAllUsers, RegisterUser, UserLogin } from './usersActions';
+import { GetAllUsers, RegisterUser, UserLogin, Logout } from './usersActions';
 
 const initialState = {
   allUsers:[],
-  user:null,
+  user:[],
   currentUser: null,
   error: null,
-  loading: false
+  loading: false,
+  loggedIn:false
 };
 
 const usersSlice = createSlice({
@@ -37,9 +38,12 @@ const usersSlice = createSlice({
       })
       .addCase(UserLogin.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.loggedIn=true;
+        state.loading=false;
       })
       .addCase(UserLogin.rejected, (state, action) => {
         state.error = action.payload;
+        state.loading=false;
       })
       .addCase(GetAllUsers.pending, (state) => {
         state.loading=true;
@@ -50,6 +54,19 @@ const usersSlice = createSlice({
       })
       .addCase(GetAllUsers.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      .addCase(Logout.pending, (state) => {
+        state.loading=true;
+        state.error = null;
+      })
+      .addCase(Logout.fulfilled, (state) => {
+        state.user = [];
+        state.loggedIn=false;
+        state.loading=false;
+      })
+      .addCase(Logout.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading=false;
       });
   },
 });

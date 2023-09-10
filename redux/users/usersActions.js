@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword,getAuth, signOut
 } from 'firebase/auth';
 import { setDoc, getDoc, doc, getDocs,collection  } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase.js';
@@ -62,7 +62,22 @@ export const UserLogin = createAsyncThunk(
       return loggedUser;
     } catch (error) {
       const errorMessage = error.message;
+      alert(error.message)
       return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const Logout = createAsyncThunk(
+  'user/Logout',
+  async (_, thunkAPI) => {
+    try {
+      const auth = getAuth();
+      signOut(auth).then(() => {
+        // Sign-out successful.
+      })
+    } catch (error) {
+      throw error;
     }
   }
 );
