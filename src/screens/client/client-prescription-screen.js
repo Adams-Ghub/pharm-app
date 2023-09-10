@@ -19,8 +19,9 @@ function ClientPrescriptionScreen() {
   const { user} = useSelector((state) => state.users);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(GetAllPrescription());
-  }, []);
+    if(prescriptions.length===0){
+    dispatch(GetAllPrescription());}
+  }, [prescriptions]);
 
   const specificPrescriptions = prescriptions.filter((prescription) =>{
     return prescription.customerId===user.id})
