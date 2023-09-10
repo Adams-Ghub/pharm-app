@@ -8,13 +8,15 @@ function ClientFeedbackUser({ user, lastChatDate, pharmacy }) {
       <View style={styles.imageContainer}>
         <Image style={styles.feedbackProfileImage} source={profile} />
       </View>
-      <View style={styles.namepharmacyContainer}>
-        <Text style={styles.fullNameText}>{user}</Text>
-        <Text style={styles.pharmacyText}>{pharmacy}</Text>
-      </View>
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>{lastChatDate}</Text>
-      </View>
+      
+        <View style={styles.namepharmacyContainer}>
+          <Text style={styles.fullNameText}>{user}</Text>
+          <Text style={styles.pharmacyText}>{pharmacy}</Text>
+        </View>
+        <View style={styles.dateContainer}>
+          <Text style={styles.dateText}>{lastChatDate}</Text>
+        </View>
+      
     </View>
   );
 }
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     marginVertical: 10,
-    marginHorizontal:4,
+    marginHorizontal: 4,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,8 +59,9 @@ const styles = StyleSheet.create({
   },
   pharmacyText: {
     fontSize: 16,
-    color:'#000'
+    color: '#000',
+    
   },
 });
 
-export default ClientFeedbackUser
+export default ClientFeedbackUser;
