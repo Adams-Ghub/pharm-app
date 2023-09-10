@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { RegisterUser } from '../../redux/users/usersActions';
+import { MaterialIcons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 
 export default function Signup({ navigation }) {
@@ -21,6 +22,7 @@ export default function Signup({ navigation }) {
   const [name, setName] = useState();
   const [registration, setRegistration] = useState('none');
   const [isModalVisible, setModalVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const { currentUser } = useSelector((state) => state.users);
 
@@ -79,11 +81,31 @@ export default function Signup({ navigation }) {
         </View>
         <View style={styles.passwordLabelInputContainer}>
           <Text style={styles.passwordText}>Password</Text>
-          <TextInput
-            secureTextEntry
-            style={styles.passwordInput}
-            onChangeText={(text) => setPassword(text)}
-          />
+          <View style={styles.visibilityPasswordInputContainer}>
+            <TextInput
+              secureTextEntry={!showPassword} // Toggle secureTextEntry based on showPassword state
+              style={styles.passwordInput}
+              onChangeText={(text) => setPassword(text)}
+            />
+            {/* Password visibility toggle */}
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.passwordVisibilityToggle}
+            >
+              <Text>
+                {showPassword ? (
+                  <MaterialIcons
+                    name="visibility-off"
+                    size={30}
+                    color="#03C043"
+                  />
+                ) : (
+                  <MaterialIcons name="visibility" size={30} color="#03C043" />
+                )}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        
         </View>
         <View style={styles.radioButtonsContainer}>
           <View style={styles.regularRadioButtonContainer}>
@@ -215,12 +237,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#565656',
     paddingLeft: 10,
-    marginBottom: 10,
+    marginBottom: 16,
   },
   passwordInput: {
     paddingLeft: 10,
     color: '#050505',
     fontSize: 18,
+    width: '90%',
+  },
+  visibilityPasswordInputContainer: {
+    flexDirection: 'row',
+   
   },
   signupButtonContainer: {
     marginBottom: 20,

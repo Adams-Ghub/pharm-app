@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import { DrawerActions } from '@react-navigation/native';
@@ -9,12 +9,15 @@ import AddPrescriptionScreen from '../screens/pharmacist/add-prescription-screen
 import Feedback from '../screens/pharmacist/feedback-screen';
 import Home from '../screens/pharmacist/pharmacist-welcome-screen';
 import { TouchableOpacity, View, Text, Image } from 'react-native';
+import { Logout } from '../../redux/users/usersActions';
 import {
   Entypo,
   SimpleLineIcons,
   Fontisto,
   Ionicons,
+  AntDesign
 } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 import profileImg from '../../assets/profile.png';
 
 const Stack = createNativeStackNavigator();
@@ -43,6 +46,21 @@ const PrescriptionNavigatior=()=> {
 
 function PharmacistNavigation({ navigation }) {
   const Drawer = createDrawerNavigator();
+  const { user, loggedIn } = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(Logout());
+  };
+
+  useEffect(() => {
+    if (loggedIn === false) {
+      navigation.navigate('Login');
+    }
+  }, [loggedIn, dispatch]);
+  console.log('user:', user)
+  const displayName = loggedIn ? user.details.name.split(' ') : '';
+
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -87,10 +105,15 @@ function PharmacistNavigation({ navigation }) {
                   padding: 0,
                   fontWeight: '600',
                   fontSize: 16,
+                  marginRight: 10,
+                  width: 50,
                 }}
               >
-                Ivy Osardu
+                {displayName[0]}
               </Text>
+              <TouchableOpacity onPress={handleLogout}>
+                <AntDesign name="logout" size={16} color="#03C043" />
+              </TouchableOpacity>
             </View>
           );
         },

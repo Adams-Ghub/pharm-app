@@ -6,17 +6,17 @@ import FeedbackUser from '../../components/feedbackuser';
 const PharmacistWelcomeScreen = () => {
   const users = [
     {
-      name: 'Sandra Momo Mensah',
+      name: 'Timothy Quainoo',
       lastChatDate: '24/09/2023',
       lastMessage: 'Thank you',
     },
     {
-      name: 'Sandra Momo Mensah',
+      name: 'Edward Frimpong',
       lastChatDate: '24/09/2023',
       lastMessage: 'Thank you',
     },
     {
-      name: 'Sandra Momo Mensah',
+      name: 'Sandra Momo',
       lastChatDate: '24/09/2023',
       lastMessage: 'Thank you',
     },
@@ -26,7 +26,7 @@ const PharmacistWelcomeScreen = () => {
       <View style={styles.latestDossageSection}>
         <Text style={styles.latestDossageText}>Latest dossage</Text>
         <PharmacistDossageTemplate
-          name={'Sandra Momo Mensah'}
+          name={'Sandra Momo'}
           date={'17/09/2023'}
           patientInfo={'Ama Mensah, 2yrs, 10Kg'}
         />
