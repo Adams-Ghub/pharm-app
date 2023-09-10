@@ -58,8 +58,8 @@ async function schedulePushNotification( prescription) {
       // sound: 'default',
     },
     trigger: {
-      seconds: 60000,
-      repeats: true,
+      seconds: 2,
+      repeats: false,
     },
   });
   console.log('notif id on scheduling', id);
