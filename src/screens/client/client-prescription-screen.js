@@ -15,13 +15,10 @@ import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionAct
 function ClientPrescriptionScreen() {
 
   //Get all prescription start
-  const { prescriptions, loading } = useSelector((state) => state.prescription);
+  const { prescriptions, prescriptionMsg } = useSelector((state) => state.prescription);
   const { user} = useSelector((state) => state.users);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if(prescriptions.length===0){
-    dispatch(GetAllPrescription());}
-  }, [prescriptions]);
+ 
 
   const specificPrescriptions = prescriptions.filter((prescription) =>{
     return prescription.customerId===user.id})
@@ -50,7 +47,7 @@ function ClientPrescriptionScreen() {
       </View>
 
       <View style={styles.bottomSection}>
-        {loading ? (
+        {prescriptionMsg==="retrieving data..." ?(
           <Text>Loading...</Text>
         ) : (
           <FlatList
