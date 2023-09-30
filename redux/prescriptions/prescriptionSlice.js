@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AddPrescription, GetAllPrescription } from './prescriptionActions';
+import { Alert } from 'react-native';
 
 const initialState = {
   prescriptions: [],
   loading: false,
   message: null,
   error: null,
+  prescriptionMsg: '',
 };
 
 const prescriptionSlice = createSlice({
@@ -16,30 +18,39 @@ const prescriptionSlice = createSlice({
       const filtered = state.prescriptions.filter(
         (prescription) => prescription.customerId === action.payload
       );
-      return filtered
+      return filtered;
+    },
+    updatePrescriptions: (state, action) => {
+      state.prescriptions = action.payload; // Update the state correctly here
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(AddPrescription.pending, (state, action) => {
+        state.currentUser = action.payload;
+        state.prescriptionMsg = 'prescribing...';
+      })
       .addCase(AddPrescription.fulfilled, (state, action) => {
         state.currentUser = action.payload;
-        state.message = 'prescription successfully added';
+        state.prescriptionMsg = 'prescription successfully added';
+        Alert.alert('Message', 'prescription successfully made');
       })
       .addCase(AddPrescription.rejected, (state, action) => {
         state.error = action.payload;
       })
       .addCase(GetAllPrescription.pending, (state, action) => {
-        state.loading = true;
+        state.prescriptionMsg = 'retrieving data...';
       })
       .addCase(GetAllPrescription.fulfilled, (state, action) => {
         state.prescriptions = action.payload;
-        state.loading = false;
+        state.prescriptionMsg = 'retrieved successfully';
       })
       .addCase(GetAllPrescription.rejected, (state, action) => {
-        state.error = action.payload;
+        state.prescriptionMsg = '';
       });
   },
 });
 
-export const { checkStatus,getMyPrescriptions } = prescriptionSlice.actions;
+export const { checkStatus, getMyPrescriptions, updatePrescriptions } =
+  prescriptionSlice.actions;
 export default prescriptionSlice.reducer;
