@@ -5,50 +5,50 @@ import FeedbackUser from '../../components/feedbackuser';
 export default function FeedBackScreen() {
   users = [
     {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
+      name: 'Ivy Osardu',
+      lastChatDate: '13/09/2023',
       lastMessage: 'Thank you',
     },
     {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
+      name: 'Raphael Donkor',
+      lastChatDate: '13/09/2023',
       lastMessage: 'Thank you',
     },
     {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
+      name: 'Sandra Momo',
+      lastChatDate: '13/09/2023',
       lastMessage: 'Thank you',
     },
-    {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
-      lastMessage: 'Thank you',
-    },
-    {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
-      lastMessage: 'Thank you',
-    },
-    {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
-      lastMessage: 'Thank you',
-    },
-    {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
-      lastMessage: 'Thank you',
-    },
-    {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
-      lastMessage: 'Thank you',
-    },
-    {
-      name: 'Sandra Momo Mensah',
-      lastChatDate: '24/09/2023',
-      lastMessage: 'Thank you',
-    },
+    // {
+    //   name: 'Sandra Momo Mensah',
+    //   lastChatDate: '24/09/2023',
+    //   lastMessage: 'Thank you',
+    // },
+    // {
+    //   name: 'Sandra Momo Mensah',
+    //   lastChatDate: '24/09/2023',
+    //   lastMessage: 'Thank you',
+    // },
+    // {
+    //   name: 'Sandra Momo Mensah',
+    //   lastChatDate: '24/09/2023',
+    //   lastMessage: 'Thank you',
+    // },
+    // {
+    //   name: 'Sandra Momo Mensah',
+    //   lastChatDate: '24/09/2023',
+    //   lastMessage: 'Thank you',
+    // },
+    // {
+    //   name: 'Sandra Momo Mensah',
+    //   lastChatDate: '24/09/2023',
+    //   lastMessage: 'Thank you',
+    // },
+    // {
+    //   name: 'Sandra Momo Mensah',
+    //   lastChatDate: '24/09/2023',
+    //   lastMessage: 'Thank you',
+    // },
   ];
   return (
     <View style={styles.mainContainer}>
