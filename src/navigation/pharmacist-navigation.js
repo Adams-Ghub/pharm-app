@@ -59,7 +59,7 @@ function PharmacistNavigation({ navigation }) {
     }
   }, [loggedIn, dispatch]);
   console.log('user:', user)
-  const displayName = loggedIn ? user.details.name.split(' ') : '';
+  const displayName = loggedIn ? user.name.split(' ') : '';
 
   return (
     <Drawer.Navigator
@@ -85,7 +85,7 @@ function PharmacistNavigation({ navigation }) {
                 gap: 3,
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                width: 120,
+                width: 130,
               }}
             >
               <Image
@@ -104,9 +104,9 @@ function PharmacistNavigation({ navigation }) {
                   margin: 0,
                   padding: 0,
                   fontWeight: '600',
-                  fontSize: 16,
+                  fontSize: 13,
                   marginRight: 10,
-                  width: 50,
+                  width: 55,
                 }}
               >
                 {displayName[0]}
