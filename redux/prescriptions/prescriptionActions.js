@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { doc, setDoc, collection, getDocs,onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/firebase.js';
+import {updatePrescriptions} from './prescriptionSlice'
 
 const AddPrescription = createAsyncThunk(
   'addPrescription',
@@ -21,6 +22,7 @@ const AddPrescription = createAsyncThunk(
       });
     } catch (error) {
       rejectWithValue(error);
+      throw error
     }
   }
 );
@@ -51,5 +53,21 @@ const unsubscribe = onSnapshot(q, (querySnapshot) => {
   });
 
 */
+
+//Listener Actions
+
+export const listenToPrescriptionsUpdate = () => (dispatch) => {
+  const firestoreCollection = collection(db, 'prescriptions');
+
+  const unsubscribe = onSnapshot(firestoreCollection, (snapshot) => {
+    const data = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+    }));
+    dispatch(updatePrescriptions(data));
+  });
+
+  // Clean up the listener when needed
+  return () => unsubscribe();
+};
 
 export { AddPrescription, GetAllPrescription };
