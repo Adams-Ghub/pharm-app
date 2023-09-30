@@ -24,23 +24,13 @@ export default function Signup({ navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  const { currentUser } = useSelector((state) => state.users);
+  const { user,signupMsg } = useSelector((state) => state.users);
 
   const handleSignUp =  () => {
   dispatch(RegisterUser({ email, password, role, name, registration }));
   
   };
 
-  useEffect(() => {
-    if (currentUser) {
-      setModalVisible(true);
-    }
-  }, [currentUser]);
-
-  const handleModalClose = () => {
-    navigation.navigate('Login');
-    setModalVisible(false);
-  };
 
 
   const displayRegistrationSection = () => {
@@ -65,6 +55,9 @@ export default function Signup({ navigation }) {
         <Text style={styles.headingText}>Signup</Text>
       </View>
       <ScrollView style={styles.bottomSection}>
+        {
+          signupMsg==='signing up...'?<Text styles={styles.signupMsg}>sigining up...</Text>:null
+        }
         <View style={styles.nameLabelInputContainer}>
           <Text style={styles.nameText}>Name</Text>
           <TextInput
@@ -149,14 +142,6 @@ export default function Signup({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <Modal isVisible={isModalVisible}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>User signed up successfully!</Text>
-          <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
-            <Text style={styles.modalButtonText}>OK</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -170,6 +155,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     margin: 0,
     padding: 0,
+  },
+  signupMsg:{
+    alignSelf:'center'
   },
   headingSection: {
     flex: 0.3,

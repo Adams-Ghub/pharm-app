@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -18,12 +19,15 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const { user,loggedIn,loading } = useSelector((state) => state.users);
+  const { loginMsg } = useSelector((state) => state.users);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    dispatch(UserLogin({email, password}));
-    console.log('email/password:', email + '/' + password);
+    if (!email || !password) {
+      Alert.alert('Error', 'All input fields are required');
+    } else {
+      dispatch(UserLogin({ email, password }));
+    }
   };
 
   const handleModalClose = () => {
@@ -31,31 +35,16 @@ export default function Login({ navigation }) {
     navigation.navigate('Login');
   };
 
-  useEffect(() => {
-    if(loggedIn){
-      if (user) {
-        console.log('role:', user.details.role);
-        user.details.role === 'customer'
-          ? navigation.navigate('ClientWelcome')
-          : navigation.navigate('PharmacistWelcome');
-      }
-     
-    }else{
-      setEmail('');
-      setPassword('');
-    }
-  }, [user,loggedIn]);
-
   return (
     <View style={styles.container}>
       <View style={styles.headingSection}>
         <Text style={styles.headingText}>Login</Text>
       </View>
-      
+
       <ScrollView style={styles.bottomSection}>
-      <View>{
-          loading?<Text>loggin in..</Text>:''
-        }</View>
+        <View>
+          {loginMsg === 'signing in...' ? <Text style={styles.loginMsg}>logging in..</Text> : null}
+        </View>
         <View style={styles.emailLabelInputContainer}>
           <Text style={styles.emailText}>Email Address</Text>
           <TextInput
@@ -90,7 +79,6 @@ export default function Login({ navigation }) {
               </Text>
             </TouchableOpacity>
           </View>
-        
         </View>
         <View style={styles.loginButtonContainer}>
           <TouchableOpacity
@@ -118,7 +106,10 @@ export default function Login({ navigation }) {
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>User signed up successfully!</Text>
-          <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={handleModalClose}
+          >
             <Text style={styles.modalButtonText}>OK</Text>
           </TouchableOpacity>
         </View>
@@ -141,6 +132,10 @@ const styles = StyleSheet.create({
     flex: 0.4,
     height: '10%',
     justifyContent: 'center',
+  },
+  loginMsg:{
+    alignSelf:'center',
+    marginVertical:2
   },
   headingText: {
     alignSelf: 'center',
@@ -187,7 +182,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginBottom: 16,
   },
-  
+
   passwordInput: {
     paddingLeft: 10,
     color: '#050505',
