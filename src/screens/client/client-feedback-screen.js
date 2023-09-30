@@ -15,50 +15,50 @@ import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionAct
 function ClientFeedbackScreen({ navigation }) {
   const users = [
     {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
+      name: 'Sarah Momo Mensah',
+      lastChatDate: '13/09/2023',
       pharmacy: 'Sikwa Pharmacy',
     },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
-    {
-      name: 'Ivy Osardu',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Sikwa Pharmacy',
-    },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
+    // {
+    //   name: 'Ivy Osardu',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Sikwa Pharmacy',
+    // },
   ];
 
   const { user, allUsers } = useSelector((state) => state.users);
@@ -77,12 +77,30 @@ function ClientFeedbackScreen({ navigation }) {
     }
   }, [prescriptions]);
 
-  const myPrescriptions = [];
-  if (user.length > 0) {
+  let myPrescriptions = []; 
     myPrescriptions = prescriptions.filter(
-      (prescriptions) => prescriptions.customerId === user.details.id
+      (prescriptions) => prescriptions.customerId === user.id
     );
-  }
+  
+
+  let AllIds=[];
+  myPrescriptions.map((pharmacist)=>{
+    if(!AllIds.includes(pharmacist.pharmacistId)){
+      AllIds.push(pharmacist.pharmacistId)
+    }
+  })
+
+let feedBackList=[];
+for(let i=0;i<AllIds.length;i++){
+  allUsers.map((user)=>{
+    if(user.id===AllIds[i]){
+      feedBackList.push(user)
+    }
+  })
+}
+
+
+
 
   let latestPharmacy = [];
 
@@ -94,7 +112,7 @@ function ClientFeedbackScreen({ navigation }) {
     });
   });
 
-  console.log('latest:', latestPharmacy);
+  // console.log('latest:', latestPharmacy);
 
   return (
     <View style={styles.mainContainer}>
@@ -103,16 +121,16 @@ function ClientFeedbackScreen({ navigation }) {
       </View>
       <View style={styles.bottomSection}>
         <FlatList
-          data={users}
+          data={feedBackList}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('chat', {
                     receiver: {
-                      id: user.details.id || '',
-                      name: user.details.name,
-                      email: user.details.email,
+                      id: user.id || '',
+                      name: user.name,
+                      email: user.email,
                     },
                   })
                 }
