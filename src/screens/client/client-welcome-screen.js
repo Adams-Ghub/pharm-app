@@ -9,20 +9,20 @@ import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionAct
 function ClientWelcomeScreen() {
   const users = [
     {
-      name: 'Ivy Osardu',
+      name: 'Sarah Momo Mensah',
       lastChatDate: '24/09/2023',
       pharmacy: 'Sikwa Pharmacy',
     },
-    {
-      name: 'John Addo',
-      lastChatDate: '24/09/2023',
-      pharmacy: 'Abric Pharmacy',
-    },
-    {
-      name: 'Stella Odum',
-      lastChatDate: '24/09/2023',
-      pharmacy: `Asher's Haven Pharmacy`,
-    },
+    // {
+    //   name: 'John Addo',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: 'Abric Pharmacy',
+    // },
+    // {
+    //   name: 'Stella Odum',
+    //   lastChatDate: '24/09/2023',
+    //   pharmacy: `Asher's Haven Pharmacy`,
+    // },
   ];
 
   Notifications.setNotificationHandler({
@@ -56,21 +56,21 @@ function ClientWelcomeScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (prescriptions.length === 0) {
+    
       dispatch(GetAllPrescription());
-    }
-  }, [prescriptions, dispatch]);
+    
+  }, []);
 
   let myPrescriptions = [];
-  if (user.details && prescriptions.length > 0) {
+  if (user && prescriptions.length > 0) {
     prescriptions.map((prescriptions) => {
-      if (prescriptions.customerId === user.details.id)
+      if (prescriptions.customerId === user.id)
         myPrescriptions.push(prescriptions);
     });
   }
 
   let sortedPrescription = [];
-  if (prescriptions.length >= 1) {
+  if (prescriptions.length > 1) {
     sortedPrescription = myPrescriptions.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
@@ -78,16 +78,16 @@ function ClientWelcomeScreen() {
     });
   } else {
     sortedPrescription = myPrescriptions;
-    return sortedPrescription;
+   
   }
 
-  console.log('latestDose', myPrescriptions);
+ 
 
   return (
     <View style={styles.principalContainer}>
       <View style={styles.latestDossageSection}>
         <Text style={styles.latestDossageText}>Latest dossage</Text>
-        {sortedPrescription.length <= 0 ? (
+        {sortedPrescription.length === 0||prescription.length===0 ? (
           <Text>No prescriptions yet!</Text>
         ) : (
           <ClientDossageTemplate
@@ -95,6 +95,7 @@ function ClientWelcomeScreen() {
             date={sortedPrescription[0].date}
             patientInfo={sortedPrescription[0].patientInfo}
             prescription={sortedPrescription[0].prescription}
+           
           />
         )}
       </View>
