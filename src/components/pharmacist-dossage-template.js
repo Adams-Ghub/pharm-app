@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-function PharmacistDossageTemplate({ name, date, patientInfo }) {
+function PharmacistDossageTemplate({ name, date, patientInfo,prescription }) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerSection}>
@@ -24,16 +24,15 @@ function PharmacistDossageTemplate({ name, date, patientInfo }) {
           <Text style={styles.amountHeadingText}>Amount</Text>
           <Text style={styles.frequencyHeadingText}>Frequency</Text>
         </View>
-        <View style={styles.medicationContainer}>
-          <Text style={styles.medicineText}>Paracetamol</Text>
-          <Text style={styles.amountText}>1 tablet</Text>
-          <Text style={styles.frequencyText}>3 x daily</Text>
-        </View>
-        <View style={styles.medicationContainer}>
-          <Text style={styles.medicineText}>Paracetamol</Text>
-          <Text style={styles.amountText}>1 tablet</Text>
-          <Text style={styles.frequencyText}>3 x daily</Text>
-        </View>
+        {prescription.map((presc) => {
+          return (
+            <View style={styles.medicationContainer}>
+              <Text style={styles.medicineText}>{presc.medicine}</Text>
+              <Text style={styles.amountText}>{presc.AmtNumber+" "+ presc.AmtType}</Text>
+              <Text style={styles.frequencyText}>{presc.FreqNumber+" x "+presc.FreqWords}</Text>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
@@ -131,18 +130,18 @@ const styles = StyleSheet.create({
   medicineText: {
     flex: 0.55,
     marginBottom: 5,
-    fontSize: 17,
+    fontSize: 15,
   },
   amountText: {
     flex: 0.21,
     alignSelf: 'center',
     marginBottom: 5,
-    fontSize: 18,
+    fontSize: 15,
   },
   frequencyText: {
     flex: 0.24,
     marginBottom: 5,
-    fontSize: 17,
+    fontSize: 15,
     textAlign: 'center',
     justifyContent: 'center',
   },
