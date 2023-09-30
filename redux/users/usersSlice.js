@@ -1,14 +1,22 @@
 // userSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import { GetAllUsers, RegisterUser, UserLogin, Logout } from './usersActions';
+import {
+  GetAllUsers,
+  RegisterUser,
+  UserLogin,
+  Logout,
+  UpdateProfile,
+} from './usersActions';
 
 const initialState = {
-  allUsers:[],
-  user:[],
-  currentUser: null,
+  allUsers: [],
+  user: [],
   error: null,
   loading: false,
-  loggedIn:false
+  loggedIn: false,
+  profileMsg: '',
+  signupMsg: '',
+  loginMsg: '',
 };
 
 const usersSlice = createSlice({
@@ -18,35 +26,44 @@ const usersSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload; // Update the state correctly here
     },
+    updateUser: (state, action) => {
+      state.user = action.payload; // Update the state correctly here
+    },
+    resetProfileMsg: (state, action) => {
+      state.profileMsg = ''; // Update the state correctly here
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(RegisterUser.pending, (state) => {
-        state.loading=true;
-        state.error = null 
+        state.signupMsg = 'signing up...';
+        state.error = null;
       })
       .addCase(RegisterUser.fulfilled, (state, action) => {
-        state.currentUser = action.payload;
-        state.loading=false;
+        state.user = action.payload;
+        state.signupMsg = 'Account created successfully';
+        state.loading = false;
       })
       .addCase(RegisterUser.rejected, (state, action) => {
         state.error = action.payload;
+        state.signupMsg = '';
       })
       .addCase(UserLogin.pending, (state) => {
-        state.loading=true;
-        state.error=null
+        state.loginMsg = 'signing in...';
+        state.error = null;
       })
       .addCase(UserLogin.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.loggedIn=true;
-        state.loading=false;
+        state.loggedIn = true;
+        state.loginMsg = 'Successfully logged in';
       })
       .addCase(UserLogin.rejected, (state, action) => {
         state.error = action.payload;
-        state.loading=false;
+        state.loading = false;
+        state.loginMsg = '';
       })
       .addCase(GetAllUsers.pending, (state) => {
-        state.loading=true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(GetAllUsers.fulfilled, (state, action) => {
@@ -55,21 +72,30 @@ const usersSlice = createSlice({
       .addCase(GetAllUsers.rejected, (state, action) => {
         state.error = action.payload;
       })
+      .addCase(UpdateProfile.pending, (state) => {
+        state.profileMsg = 'updating...';
+      })
+      .addCase(UpdateProfile.fulfilled, (state, action) => {
+        state.profileMsg = 'updated successfully';
+      })
+      .addCase(UpdateProfile.rejected, (state, action) => {
+        state.profileMsg = '';
+      })
       .addCase(Logout.pending, (state) => {
-        state.loading=true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(Logout.fulfilled, (state) => {
         state.user = [];
-        state.loggedIn=false;
-        state.loading=false;
+        state.loggedIn = false;
+        state.loading = false;
       })
       .addCase(Logout.rejected, (state, action) => {
         state.error = action.payload;
-        state.loading=false;
+        state.loading = false;
       });
   },
 });
 
-export const { setUser } = usersSlice.actions;
+export const { setUser, updateUser, resetProfileMsg } = usersSlice.actions;
 export default usersSlice.reducer;
