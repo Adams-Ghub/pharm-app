@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native';
 import PrescriptionItem from '../../components/prescription-item';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionActions';
+import {
+  GetAllPrescription,
+  listenToPrescriptionsUpdate,
+} from '../../../redux/prescriptions/prescriptionActions';
 
 export default function PrescriptionScreen({ navigation }) {
   const prescribtions = [
@@ -78,18 +81,20 @@ export default function PrescriptionScreen({ navigation }) {
   ];
 
   //Get all prescription start
-  const { prescriptions,loading } = useSelector((state) => state.prescription);
+  const { prescriptions } = useSelector((state) => state.prescription);
+  const { user } = useSelector((state) => state.users);
+
+  const myPrescriptions = prescriptions.filter(
+    (pres) => pres.pharmacistId === user.id
+  );
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(GetAllPrescription());
+    dispatch(listenToPrescriptionsUpdate());
   }, []);
-  //Get all prescription ends
 
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(GetAllPrescription());
-    }, [])
-  );
+  //Get all prescription ends
 
   return (
     <View style={styles.mainContainer}>
@@ -114,20 +119,17 @@ export default function PrescriptionScreen({ navigation }) {
       </View>
 
       <View style={styles.bottomSection}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : prescriptions==[]?<Text>No prescriptions available!!</Text>:(
+        {myPrescriptions.length === 0 ? (
+          <Text style={styles.prescriptionMsg}>No prescriptions yet!</Text>
+        ) : (
           <FlatList
-            data={prescriptions}
+            data={myPrescriptions}
             renderItem={({ item }) => {
-              
               return (
                 <PrescriptionItem
                   Id={item.id}
                   customer={item.customer}
-                  medicine={ 
-                       item.prescription[0].medicine
-                  }
+                  medicine={item.prescription[0].medicine}
                   date={item.date}
                 />
               );
@@ -190,7 +192,10 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     height: 30,
   },
-
+  prescriptionMsg: {
+    textAlign: 'center',
+    fontSize: 18,
+  },
   bottomSection: {
     flex: 0.9,
     marginHorizontal: 10,
