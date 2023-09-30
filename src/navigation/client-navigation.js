@@ -49,14 +49,10 @@ function ClientNavigation({ navigation }) {
   const dispatch = useDispatch();
   const { user, loggedIn } = useSelector((state) => state.users);
 
-  useEffect(() => {
-    if (loggedIn === false) {
-      navigation.navigate('Login');
-    }
-  }, [loggedIn, dispatch]);
+ 
   console.log('user:', user)
 
-  const displayName = loggedIn ? user.details.name.split(' ') : '';
+  const displayName = loggedIn ? user.name.split(' ') : '';
 
   const handleLogout = () => {
     dispatch(Logout());
@@ -105,8 +101,8 @@ function ClientNavigation({ navigation }) {
                   padding: 0,
                   fontWeight: '600',
                   fontSize: 16,
-                  marginRight: 15,
-                  width: 50,
+                  marginRight: 7,
+                  width: 60,
                 }}
               >
                 {displayName[0]}
