@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import ClentPrescriptionItem from '../../components/client-prescription-item';
+import ClientPrescriptionItem from '../../components/client-prescription-item';
 import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionActions';
 
 function ClientPrescriptionScreen() {
@@ -54,11 +54,8 @@ function ClientPrescriptionScreen() {
             data={specificPrescriptions}
             renderItem={({ item }) => {
               return (
-                <ClentPrescriptionItem
-                  Id={item.id}
-                  pharmacy={item.pharmacy}
-                  medicine={item.prescription[0].medicine}
-                  date={item.date}
+                <ClientPrescriptionItem
+                  data={item}
                 />
               );
             }}
