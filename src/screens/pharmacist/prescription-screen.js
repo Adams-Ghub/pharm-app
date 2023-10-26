@@ -14,7 +14,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   GetAllPrescription,
   listenToPrescriptionsUpdate,
+  
 } from '../../../redux/prescriptions/prescriptionActions';
+import { GetAllUsers } from '../../../redux/users/usersActions';
 
 export default function PrescriptionScreen({ navigation }) {
   const prescribtions = [
@@ -82,7 +84,7 @@ export default function PrescriptionScreen({ navigation }) {
 
   //Get all prescription start
   const { prescriptions } = useSelector((state) => state.prescription);
-  const { user } = useSelector((state) => state.users);
+  const { user, allUsers } = useSelector((state) => state.users);
 
   const myPrescriptions = prescriptions.filter(
     (pres) => pres.pharmacistId === user.id
@@ -92,9 +94,30 @@ export default function PrescriptionScreen({ navigation }) {
   useEffect(() => {
     dispatch(GetAllPrescription());
     dispatch(listenToPrescriptionsUpdate());
+    dispatch(GetAllUsers())
   }, []);
 
   //Get all prescription ends
+
+  let AllIds = [];
+  myPrescriptions.map((customer) => {
+    if (!AllIds.includes(customer.customerId)) {
+      AllIds.push(customer.customerId);
+    }
+  });
+
+  let feedBackList = [];
+ 
+    for (let i = 0; i < AllIds.length; i++) {
+      allUsers.map((user) => {
+        if (user.id == AllIds[i]) {
+          feedBackList.push(user);
+        }
+      });
+    }
+  
+
+  console.log('AllIds:', feedBackList);
 
   return (
     <View style={styles.mainContainer}>
@@ -125,14 +148,7 @@ export default function PrescriptionScreen({ navigation }) {
           <FlatList
             data={myPrescriptions}
             renderItem={({ item }) => {
-              return (
-                <PrescriptionItem
-                  Id={item.id}
-                  customer={item.customer}
-                  medicine={item.prescription[0].medicine}
-                  date={item.date}
-                />
-              );
+              return <PrescriptionItem data={item} receivers={feedBackList} />;
             }}
           />
         )}
