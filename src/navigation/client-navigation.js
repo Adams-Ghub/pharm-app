@@ -5,6 +5,7 @@ import { DrawerActions } from '@react-navigation/native';
 import DrawerItem from '../components/drawer-item';
 import Account from '../screens/client/client-profile';
 import ClientPrescriptionScreen from '../screens/client/client-prescription-screen';
+import PrescriptionDetails from '../screens/client/prescription-details';
 import Home from '../screens/client/client-welcome-screen';
 import Feedback from '../screens/client/client-feedback-screen';
 import { TouchableOpacity, View, Text, Image } from 'react-native';
@@ -39,6 +40,28 @@ const chatNavigation = () => {
         name="chat"
         // options={{ header: () => {} }}
         component={Chat}
+      />
+    </Stack.Navigator>
+  );
+};
+const prescriptionNavigation = () => { 
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        header: () => null,
+      }}
+      initialRouteName="Prescription"
+    >
+      <Stack.Screen
+        name="Prescription"
+        // options={{ header: () => {} }}
+        component={ClientPrescriptionScreen}
+      />
+      <Stack.Screen
+        name="PrescriptionDetails"
+        // options={{ header: () => {} }}
+        component={PrescriptionDetails}
       />
     </Stack.Navigator>
   );
@@ -181,7 +204,7 @@ function ClientNavigation({ navigation }) {
       />
       <Drawer.Screen
         name="Prescription"
-        component={ClientPrescriptionScreen}
+        component={prescriptionNavigation}
         options={{
           drawerLabel: () => {
             return (
