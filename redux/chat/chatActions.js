@@ -17,7 +17,6 @@ import {
 import { auth, db } from '../../firebase/firebase.js';
 import { updateUser } from './usersSlice.js';
 import { useDispatch } from 'react-redux';
-import { Alert } from 'react-native';
 
 export const RegisterUser = createAsyncThunk(
   'user/register',
@@ -118,7 +117,7 @@ export const UserLogin = createAsyncThunk(
       console.log('user', loggedUser);
       return loggedUser;
     } catch (error) {
-      Alert.alert("Error: ", error.message)
+      alert(error.message);
       return rejectWithValue(error.message); // Provide a more detailed error message
     }
   }
@@ -153,18 +152,7 @@ export const GetAllUsers = createAsyncThunk(
   }
 );
 
-export const CreateChatRoom = createAsyncThunk(
-  'user/getUsers',
-  async (id, thunkAPI) => {
-    try {
-      setDoc(doc(db, 'chats', id), { messages: [] });
 
-      return userData;
-    } catch (error) {
-      throw error;
-    }
-  }
-);
 
 ///Listerner Actions
 export const listenToProfileUpdate = (id) => (dispatch) => {

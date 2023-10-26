@@ -9,7 +9,7 @@ import {
 } from './usersActions';
 
 const initialState = {
-  allUsers: [],
+  allChats: [],
   user: [],
   error: null,
   loading: false,

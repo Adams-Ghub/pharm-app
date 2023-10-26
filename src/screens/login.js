@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { MaterialIcons } from '@expo/vector-icons';
 import { UserLogin } from '../../redux/users/usersActions';
 import Modal from 'react-native-modal';
 
@@ -17,11 +19,15 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.users);
+  const { loginMsg } = useSelector((state) => state.users);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
-    dispatch(UserLogin({email, password}));
-    console.log('email/password:', email + '/' + password);
+    if (!email || !password) {
+      Alert.alert('Error', 'All input fields are required');
+    } else {
+      dispatch(UserLogin({ email, password }));
+    }
   };
 
   const handleModalClose = () => {
@@ -29,21 +35,16 @@ export default function Login({ navigation }) {
     navigation.navigate('Login');
   };
 
-  useEffect(() => {
-    if (user) {
-      console.log('role:', user.details.role);
-      user.details.role === 'customer'
-        ? navigation.navigate('ClientWelcome')
-        : navigation.navigate('PharmacistWelcome');
-    }
-  }, [user]);
-
   return (
     <View style={styles.container}>
       <View style={styles.headingSection}>
         <Text style={styles.headingText}>Login</Text>
       </View>
+
       <ScrollView style={styles.bottomSection}>
+        <View>
+          {loginMsg === 'signing in...' ? <Text style={styles.loginMsg}>logging in..</Text> : null}
+        </View>
         <View style={styles.emailLabelInputContainer}>
           <Text style={styles.emailText}>Email Address</Text>
           <TextInput
@@ -54,12 +55,30 @@ export default function Login({ navigation }) {
         </View>
         <View style={styles.passwordLabelInputContainer}>
           <Text style={styles.passwordText}>Password</Text>
-          <TextInput
-            secureTextEntry
-            style={styles.passwordInput}
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
+          <View style={styles.visibilityPasswordInputContainer}>
+            <TextInput
+              secureTextEntry={!showPassword} // Toggle secureTextEntry based on showPassword state
+              style={styles.passwordInput}
+              onChangeText={(text) => setPassword(text)}
+            />
+            {/* Password visibility toggle */}
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.passwordVisibilityToggle}
+            >
+              <Text>
+                {showPassword ? (
+                  <MaterialIcons
+                    name="visibility-off"
+                    size={30}
+                    color="#03C043"
+                  />
+                ) : (
+                  <MaterialIcons name="visibility" size={30} color="#03C043" />
+                )}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.loginButtonContainer}>
           <TouchableOpacity
@@ -87,7 +106,10 @@ export default function Login({ navigation }) {
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalText}>User signed up successfully!</Text>
-          <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={handleModalClose}
+          >
             <Text style={styles.modalButtonText}>OK</Text>
           </TouchableOpacity>
         </View>
@@ -110,6 +132,10 @@ const styles = StyleSheet.create({
     flex: 0.4,
     height: '10%',
     justifyContent: 'center',
+  },
+  loginMsg:{
+    alignSelf:'center',
+    marginVertical:2
   },
   headingText: {
     alignSelf: 'center',
@@ -156,10 +182,15 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginBottom: 16,
   },
+
   passwordInput: {
     paddingLeft: 10,
     color: '#050505',
     fontSize: 18,
+    width: '90%',
+  },
+  visibilityPasswordInputContainer: {
+    flexDirection: 'row',
   },
   loginButton: {
     backgroundColor: '#03C043',

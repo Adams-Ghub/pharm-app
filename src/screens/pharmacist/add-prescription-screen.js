@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { View, StyleSheet, Text, TextInput } from 'react-native';
+import { View, StyleSheet, Text, TextInput ,Alert} from 'react-native';
 import DossageItem from '../../components/dossage-item';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import SearchableDropdown from 'react-native-searchable-dropdown';
@@ -35,29 +35,14 @@ export default function AddPrescriptionScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const { allUsers,loading, user} = useSelector((state) => state.users);
+  const { allUsers,prescriptionMsg, user} = useSelector((state) => state.users);
   // const { message} = useSelector((state) => state.prescription);
   
   useEffect(() => {
     dispatch(GetAllUsers());
   }, []);
 
-  //Modal dialog 
-  // useEffect(() => {
-  //   if (message!==null) {
-  //     setModalVisible(true);
-  //   }
-  // }, [message]);
-
-  // const handleModalClose = () => {
-  //   setModalVisible(false);
-    
-  // };
-
-//Modal dialog ends
-
-  // console.log("allUsers:",allUsers);
-
+  
   let customers=[];
   allUsers.map((user)=>{
     if(user.role=='customer'){
@@ -65,33 +50,29 @@ export default function AddPrescriptionScreen() {
     }   
   })
 
-  // const customers = [
-  //   { id: 1, name: 'Sandra Momo' },
-  //   { id: 2, name: 'Sandra Mensah' },
-  //   { id: 3, name: 'Stephen Oduro' },
-  //   // Add more options as needed
-  // ];
-
   const handleSelectItem = (item) => {
     setSelectedItem(item);
   };
 
   const handleAddPrescription = ()=>{
+    console.log("user:",user)
     if (!selectedItem) {
-      console.log('Please select a customer before creating the prescription.');
-      return;
-    }
+      Alert.alert("Error","select a customer")
+    }else if(!user.pharmacy||!user.phone){
+      Alert.alert('Error','Update profile. Input fields cannot be empty')
+    }else{
+      dispatch(AddPrescription({ 
+        id:Crypto.randomUUID().slice(-12),
+        customerId:selectedItem.id,
+        customer:selectedItem.name,
+        pharmacy:user.pharmacy,           
+        pharmacistId:user.id,
+        prescription:dosageData,
+        patientInfo:patientInfo,
+        date:format(selectedDate, 'dd/MM/yyyy')}));
 
-    console.log('pharmacy: ',user.pharmacy)
-    dispatch(AddPrescription({ 
-      id:Crypto.randomUUID().slice(-12),
-      customerId:selectedItem.id,
-      customer:selectedItem.name,
-      pharmacy:user.details.pharmacy,           
-      pharmacistId:user.id,
-      prescription:dosageData,
-      patientInfo:patientInfo,
-      date:format(selectedDate, 'dd/MM/yyyy')}));
+    }
+  
   }
 
   const handleDateChange = (event, date) => {
@@ -233,11 +214,6 @@ export default function AddPrescriptionScreen() {
         <Text style={styles.medicationAndDosageTitle}>Medication & Dosage</Text>
 
         <ScrollView style={styles.dossageItemContainer}>
-          {/* <DossageItem onAmtNumberChange={()=>}/>
-          <DossageItem />
-          <DossageItem />
-          <DossageItem />
-          <DossageItem /> */}
           {dosageItems.map((dosageItem, index) => (
             <View key={index}>{dosageItem}</View>
           ))}
@@ -247,6 +223,9 @@ export default function AddPrescriptionScreen() {
         </ScrollView>
       </View>
       <View style={styles.createPrescriptionBtnContainer}>
+        {
+          prescriptionMsg==='prescribing...'?<Text style={styles.prescriptionMsg}>Prescribing...</Text>:null
+        }
         <TouchableOpacity style={styles.createPrescriptionBtn} 
         onPress={()=>handleAddPrescription()}
         >
@@ -281,6 +260,9 @@ const styles = StyleSheet.create({
   dateText:{
     fontSize:18,
     fontWeight:'600'
+  },
+  prescriptionMsg:{
+    alignSelf:'center'
   },
   dateInput: {
     borderStyle: 'solid',

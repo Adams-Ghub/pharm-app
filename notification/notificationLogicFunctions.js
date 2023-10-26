@@ -1,6 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import {useState,useRef,useEffect} from 'react';
 import Constants from 'expo-constants'; 
+import { Audio } from 'expo-av';
+import { Asset } from 'expo-asset';
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -38,6 +40,28 @@ console.log('token',token)
   
 }
 
+
+
+
+let sound = new Audio.Sound();
+
+const playDefaultAlarmSound = async () => {
+  try {
+    await sound.loadAsync(require('./assets/alarm.mp3')); // Replace with the actual filename if different
+
+    await sound.playAsync();
+    
+    setTimeout(async () => {
+      await sound.stopAsync();
+    }, 6000); // Stop after 6 seconds
+  } catch (error) {
+    console.error('Error playing default alarm sound:', error);
+  }
+};
+
+
+
+
 async function schedulePushNotification( prescription) {
   // time = new Date(time.getTime() + 2 * 60000);
   var days = [
@@ -55,11 +79,11 @@ async function schedulePushNotification( prescription) {
     content: {
       title: 'Dosage time',
       body: prescription,
-      // sound: 'default',
+      // sound: ''
     },
     trigger: {
-      seconds: 60000,
-      repeats: true,
+      seconds: 2,
+      repeats: false,
     },
   });
   console.log('notif id on scheduling', id);

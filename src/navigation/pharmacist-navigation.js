@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import { DrawerActions } from '@react-navigation/native';
@@ -6,15 +6,20 @@ import DrawerItem from '../components/drawer-item';
 import Account from '../screens/pharmacist/profile-screen';
 import PrescriptionScreen from '../screens/pharmacist/prescription-screen';
 import AddPrescriptionScreen from '../screens/pharmacist/add-prescription-screen';
+import PharmacyPrescriptionDetails from '../screens/pharmacist/pharmacy-prescription-details'
 import Feedback from '../screens/pharmacist/feedback-screen';
+import PharmacistChat from '../screens/pharmacist/pharmacist-chat'
 import Home from '../screens/pharmacist/pharmacist-welcome-screen';
 import { TouchableOpacity, View, Text, Image } from 'react-native';
+import { Logout } from '../../redux/users/usersActions';
 import {
   Entypo,
   SimpleLineIcons,
   Fontisto,
   Ionicons,
+  AntDesign
 } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 import profileImg from '../../assets/profile.png';
 
 const Stack = createNativeStackNavigator();
@@ -37,12 +42,54 @@ const PrescriptionNavigatior=()=> {
         // options={{ header: () => {} }}
         component={AddPrescriptionScreen}
       />    
+      <Stack.Screen
+        name="PharmPrescriptionDetails"
+        // options={{ header: () => {} }}
+        component={PharmacyPrescriptionDetails}
+      />    
+    </Stack.Navigator>
+  );
+}
+const FeedbackNavigator=()=> {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        header: () => null,
+      }}
+      initialRouteName="FeedbackScreen"
+      
+    >
+      <Stack.Screen
+        name="FeedbackScreen"
+        // options={{ header: () => {} }}
+        component={Feedback}
+      />    
+      <Stack.Screen
+        name="PharmacistChat"
+        // options={{ header: () => {} }}
+        component={PharmacistChat}
+      />    
     </Stack.Navigator>
   );
 }
 
 function PharmacistNavigation({ navigation }) {
   const Drawer = createDrawerNavigator();
+  const { user, loggedIn } = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(Logout());
+  };
+
+  useEffect(() => {
+    if (loggedIn === false) {
+      navigation.navigate('Login');
+    }
+  }, [loggedIn, dispatch]);
+  console.log('user:', user)
+  const displayName = loggedIn ? user.name.split(' ') : '';
+
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -67,7 +114,7 @@ function PharmacistNavigation({ navigation }) {
                 gap: 3,
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                width: 120,
+                width: 130,
               }}
             >
               <Image
@@ -86,11 +133,16 @@ function PharmacistNavigation({ navigation }) {
                   margin: 0,
                   padding: 0,
                   fontWeight: '600',
-                  fontSize: 16,
+                  fontSize: 13,
+                  marginRight: 10,
+                  width: 55,
                 }}
               >
-                Ivy Osardu
+                {displayName[0]}
               </Text>
+              <TouchableOpacity onPress={handleLogout}>
+                <AntDesign name="logout" size={16} color="#03C043" />
+              </TouchableOpacity>
             </View>
           );
         },
@@ -183,7 +235,7 @@ function PharmacistNavigation({ navigation }) {
       />
       <Drawer.Screen
         name="Feedback"
-        component={Feedback}
+        component={FeedbackNavigator}
         options={{
           drawerLabel: () => {
             return (

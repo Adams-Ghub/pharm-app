@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { RegisterUser } from '../../redux/users/usersActions';
+import { MaterialIcons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 
 export default function Signup({ navigation }) {
@@ -21,24 +22,15 @@ export default function Signup({ navigation }) {
   const [name, setName] = useState();
   const [registration, setRegistration] = useState('none');
   const [isModalVisible, setModalVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
-  const { currentUser } = useSelector((state) => state.users);
+  const { user,signupMsg } = useSelector((state) => state.users);
 
   const handleSignUp =  () => {
   dispatch(RegisterUser({ email, password, role, name, registration }));
   
   };
 
-  useEffect(() => {
-    if (currentUser) {
-      setModalVisible(true);
-    }
-  }, [currentUser]);
-
-  const handleModalClose = () => {
-    navigation.navigate('Login');
-    setModalVisible(false);
-  };
 
 
   const displayRegistrationSection = () => {
@@ -63,6 +55,9 @@ export default function Signup({ navigation }) {
         <Text style={styles.headingText}>Signup</Text>
       </View>
       <ScrollView style={styles.bottomSection}>
+        {
+          signupMsg==='signing up...'?<Text styles={styles.signupMsg}>sigining up...</Text>:null
+        }
         <View style={styles.nameLabelInputContainer}>
           <Text style={styles.nameText}>Name</Text>
           <TextInput
@@ -79,11 +74,31 @@ export default function Signup({ navigation }) {
         </View>
         <View style={styles.passwordLabelInputContainer}>
           <Text style={styles.passwordText}>Password</Text>
-          <TextInput
-            secureTextEntry
-            style={styles.passwordInput}
-            onChangeText={(text) => setPassword(text)}
-          />
+          <View style={styles.visibilityPasswordInputContainer}>
+            <TextInput
+              secureTextEntry={!showPassword} // Toggle secureTextEntry based on showPassword state
+              style={styles.passwordInput}
+              onChangeText={(text) => setPassword(text)}
+            />
+            {/* Password visibility toggle */}
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.passwordVisibilityToggle}
+            >
+              <Text>
+                {showPassword ? (
+                  <MaterialIcons
+                    name="visibility-off"
+                    size={30}
+                    color="#03C043"
+                  />
+                ) : (
+                  <MaterialIcons name="visibility" size={30} color="#03C043" />
+                )}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        
         </View>
         <View style={styles.radioButtonsContainer}>
           <View style={styles.regularRadioButtonContainer}>
@@ -127,14 +142,6 @@ export default function Signup({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <Modal isVisible={isModalVisible}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalText}>User signed up successfully!</Text>
-          <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
-            <Text style={styles.modalButtonText}>OK</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -148,6 +155,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     margin: 0,
     padding: 0,
+  },
+  signupMsg:{
+    alignSelf:'center'
   },
   headingSection: {
     flex: 0.3,
@@ -215,12 +225,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#565656',
     paddingLeft: 10,
-    marginBottom: 10,
+    marginBottom: 16,
   },
   passwordInput: {
     paddingLeft: 10,
     color: '#050505',
     fontSize: 18,
+    width: '90%',
+  },
+  visibilityPasswordInputContainer: {
+    flexDirection: 'row',
+   
   },
   signupButtonContainer: {
     marginBottom: 20,

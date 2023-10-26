@@ -8,10 +8,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native';
 import PrescriptionItem from '../../components/prescription-item';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionActions';
+import {
+  GetAllPrescription,
+  listenToPrescriptionsUpdate,
+  
+} from '../../../redux/prescriptions/prescriptionActions';
+import { GetAllUsers } from '../../../redux/users/usersActions';
 
 export default function PrescriptionScreen({ navigation }) {
   const prescribtions = [
@@ -78,18 +83,41 @@ export default function PrescriptionScreen({ navigation }) {
   ];
 
   //Get all prescription start
-  const { prescriptions,loading } = useSelector((state) => state.prescription);
+  const { prescriptions } = useSelector((state) => state.prescription);
+  const { user, allUsers } = useSelector((state) => state.users);
+
+  const myPrescriptions = prescriptions.filter(
+    (pres) => pres.pharmacistId === user.id
+  );
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(GetAllPrescription());
+    dispatch(listenToPrescriptionsUpdate());
+    dispatch(GetAllUsers())
   }, []);
+
   //Get all prescription ends
 
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(GetAllPrescription());
-    }, [])
-  );
+  let AllIds = [];
+  myPrescriptions.map((customer) => {
+    if (!AllIds.includes(customer.customerId)) {
+      AllIds.push(customer.customerId);
+    }
+  });
+
+  let feedBackList = [];
+ 
+    for (let i = 0; i < AllIds.length; i++) {
+      allUsers.map((user) => {
+        if (user.id == AllIds[i]) {
+          feedBackList.push(user);
+        }
+      });
+    }
+  
+
+  console.log('AllIds:', feedBackList);
 
   return (
     <View style={styles.mainContainer}>
@@ -114,23 +142,13 @@ export default function PrescriptionScreen({ navigation }) {
       </View>
 
       <View style={styles.bottomSection}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : prescriptions==[]?<Text>No prescriptions available!!</Text>:(
+        {myPrescriptions.length === 0 ? (
+          <Text style={styles.prescriptionMsg}>No prescriptions yet!</Text>
+        ) : (
           <FlatList
-            data={prescriptions}
+            data={myPrescriptions}
             renderItem={({ item }) => {
-              
-              return (
-                <PrescriptionItem
-                  Id={item.id}
-                  customer={item.customer}
-                  medicine={ 
-                       item.prescription[0].medicine
-                  }
-                  date={item.date}
-                />
-              );
+              return <PrescriptionItem data={item} receivers={feedBackList} />;
             }}
           />
         )}
@@ -190,7 +208,10 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     height: 30,
   },
-
+  prescriptionMsg: {
+    textAlign: 'center',
+    fontSize: 18,
+  },
   bottomSection: {
     flex: 0.9,
     marginHorizontal: 10,

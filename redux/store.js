@@ -1,12 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
-import usersReducer from './users/usersSlice';
-import prescriptionReducer from './prescriptions/prescriptionSlice';
+import { persistStore, persistReducer } from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import rootReducer from './root-reducer'; // Your root reducer
+
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: {
-    users: usersReducer,
-    prescription: prescriptionReducer,
-  },
+  reducer: persistedReducer,
 });
 
-export default store;
+const persistor = persistStore(store);
+
+export { store, persistor };

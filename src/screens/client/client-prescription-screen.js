@@ -9,18 +9,16 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import ClentPrescriptionItem from '../../components/client-prescription-item';
+import ClientPrescriptionItem from '../../components/client-prescription-item';
 import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionActions';
 
 function ClientPrescriptionScreen() {
 
   //Get all prescription start
-  const { prescriptions, loading } = useSelector((state) => state.prescription);
+  const { prescriptions, prescriptionMsg } = useSelector((state) => state.prescription);
   const { user} = useSelector((state) => state.users);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(GetAllPrescription());
-  }, []);
+ 
 
   const specificPrescriptions = prescriptions.filter((prescription) =>{
     return prescription.customerId===user.id})
@@ -49,18 +47,15 @@ function ClientPrescriptionScreen() {
       </View>
 
       <View style={styles.bottomSection}>
-        {loading ? (
+        {prescriptionMsg==="retrieving data..." ?(
           <Text>Loading...</Text>
         ) : (
           <FlatList
             data={specificPrescriptions}
             renderItem={({ item }) => {
               return (
-                <ClentPrescriptionItem
-                  Id={item.id}
-                  pharmacy={item.pharmacy}
-                  medicine={item.prescription[0].medicine}
-                  date={item.date}
+                <ClientPrescriptionItem
+                  data={item}
                 />
               );
             }}
