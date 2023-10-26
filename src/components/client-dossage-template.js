@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-function clientDosageTemplate({ pharmacy, date, patientInfo, prescription }) {
+function ClientDosageTemplate({ pharmacy, date, patientInfo, prescription }) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerSection}>
@@ -147,4 +147,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-export default clientDosageTemplate;
+export default ClientDosageTemplate;
