@@ -1,8 +1,8 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import PharmacistDossageTemplate from '../../components/pharmacist-dossage-template';
 import FeedbackUser from '../../components/feedbackuser';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GetAllPrescription } from '../../../redux/prescriptions/prescriptionActions';
 
 const PharmacistWelcomeScreen = () => {
@@ -24,22 +24,25 @@ const PharmacistWelcomeScreen = () => {
     },
   ];
 
-
   const { prescriptions } = useSelector((state) => state.prescription);
-  const { user } = useSelector((state) => state.users);
+  const { user,allUsers } = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
-  useEffect(() => {    
-      dispatch(GetAllPrescription());    
+  useEffect(() => {
+    dispatch(GetAllPrescription());
   }, []);
 
+  console.log('prescriptions:', prescriptions);
   let myPrescriptions = [];
   if (user && prescriptions.length > 0) {
-    prescriptions.map((prescriptions) => {
-      if (prescriptions.pharmacistId === user.id)
-        myPrescriptions.push(prescriptions);
+    prescriptions.map((prescription) => {
+      if (prescription.pharmacistId === user.id) {
+        myPrescriptions.push(prescription);
+      }
     });
   }
+
+  console.log('my prescriptions:', myPrescriptions);
 
   let sortedPrescription = [];
   if (prescriptions.length > 1) {
@@ -50,25 +53,55 @@ const PharmacistWelcomeScreen = () => {
     });
   } else {
     sortedPrescription = myPrescriptions;
-   
   }
+
+
+  let AllIds=[];
+  myPrescriptions.map((pharmacist)=>{
+    if(!AllIds.includes(pharmacist.customerId)){
+      AllIds.push(pharmacist.customerId)
+    }
+  })
+
+let feedBackList=[];
+for(let i=0;i<AllIds.length;i++){
+  allUsers.map((user)=>{
+    if(user.id===AllIds[i]){
+      feedBackList.push(user)
+    }
+  })
+}
+
+  let latestPharmacy = [];
+  myPrescriptions.map((prescription) => {
+    allUsers.find((theuser) => {
+      if (theuser.id === prescription.pharmacistId) {
+        latestPharmacy.push(theuser);
+      }
+    });
+  });
 
   return (
     <View style={styles.principalContainer}>
       <View style={styles.latestDossageSection}>
         <Text style={styles.latestDossageText}>Latest dossage</Text>
-        <PharmacistDossageTemplate
-          name={sortedPrescription[0].customer}
-          date={sortedPrescription[0].date}
-          patientInfo={sortedPrescription[0].patientInfo}
-          prescription={sortedPrescription[0].prescription}
-        />
+
+        {sortedPrescription.length === 0 || prescriptions.length === 0 ? (
+          <Text>No prescriptions yet!</Text>
+        ) : (
+          <PharmacistDossageTemplate
+            name={sortedPrescription[0].customer}
+            date={sortedPrescription[0].date}
+            patientInfo={sortedPrescription[0].patientInfo}
+            prescription={sortedPrescription[0].prescription}
+          />
+        )}
       </View>
       <View style={styles.latestFeedbackSection}>
         <Text style={styles.latestFeedbackText}>Latest feedback</Text>
         <View style={styles.feedbacksContianer}>
           <FlatList
-            data={users}
+            data={feedBackList}
             renderItem={({ item }) => {
               return (
                 <FeedbackUser
@@ -101,7 +134,7 @@ const styles = StyleSheet.create({
   latestDossageText: {
     padding: 0,
     marginTop: 10,
-    marginBottom:4,
+    marginBottom: 4,
     color: '#03C043',
     fontSize: 20,
     fontWeight: '600',
