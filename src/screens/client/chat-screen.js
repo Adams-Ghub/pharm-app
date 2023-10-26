@@ -57,12 +57,7 @@ const Chat = ({ navigation }) => {
       ),
     });
 
-    const generateChatId = (user1Id, user2Id) => {
-      const users = [user1Id, user2Id];
-      users.sort(); // Sort user IDs to ensure consistency
-      return users.join('_'); // Concatenate and create a unique chat room ID
-    };
-
+   
     // const q = query(collection(db, 'chats'), orderBy('createdAt', 'desc'));
     // const unsubscribe = onSnapshot(q, (snapshot) => setMessages(
     //     snapshot.docs.map(doc => ({
@@ -74,20 +69,28 @@ const Chat = ({ navigation }) => {
     //     }))
     // ));
 
-    const q = query(
-      collection(db, 'chats', generateChatId(user.id, to.id)),
-      orderBy('createdAt', 'desc')
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) =>
-      setMessages(
-        snapshot.docs.map((doc) => ({
-          _id: doc.id, // Use the document ID as the message ID
-          createdAt: doc.data().createdAt.toDate(),
-          text: doc.data().text,
-          user: doc.data().user,
-        }))
-      )
-    );
+   // Replace your existing code that retrieves chat messages with the following:
+
+
+
+// Get the chat room ID from your route or wherever it's stored
+
+const messagesRef = collection(db, 'chats', chatRoomId, 'messages');
+const q = query(messagesRef, orderBy('createdAt', 'desc'));
+
+const unsubscribe = onSnapshot(q, (snapshot) => {
+  setMessages(
+    snapshot.docs.map(doc => ({
+      _id: doc.id, // Use doc.id as the message ID
+      createdAt: doc.data().createdAt.toDate(),
+      text: doc.data().text,
+      user: doc.data().user,
+    }))
+  );
+});
+
+// Ensure that you have access to the chat room ID when entering the chat room.
+
 
     return () => {
       unsubscribe();
@@ -95,7 +98,10 @@ const Chat = ({ navigation }) => {
     };
   }, [navigation]);
 
-  const to = route.params.receiver;
+  const to = route.params.receiver;  
+  const { user } = useSelector((state) => state.users);
+
+  const chatRoomId =  user.id.slice(0, 8) + to.id.slice(0, 8);
 
   // const onSend = useCallback((messages = []) => {
   //     const { _id, createdAt, text, user} = messages[0]
@@ -103,20 +109,22 @@ const Chat = ({ navigation }) => {
   //     addDoc(collection(db, 'chats'), { _id, createdAt,  text, user, });
   // }, []);
 
-  const onSend = useCallback((messages = []) => {
-    const { _id, createdAt, text, user } = messages[0];
-    const chatId = generateChatId(user.id, to.id); // Generate a unique chat ID
+ // Update your onSend function to add messages to the appropriate chat room's "messages" subcollection:
 
-    // Add the message to the chat document
-    addDoc(collection(db, 'chats', chatId), {
-      _id,
-      createdAt,
-      text,
-      user,
+const onSend = useCallback((messages = []) => {
+  const chatRoomId =  user.id.slice(0, 8) + to.id.slice(0, 8);
+
+  messages.forEach((message) => {
+    // Use addDoc to add the message to the "messages" subcollection of the chat room
+    addDoc(collection(db, 'chats', chatRoomId, 'messages'), {
+      createdAt: message.createdAt,
+      text: message.text,
+      user: message.user,
     });
-  }, []);
+  });
+}, []);
 
-  const { user } = useSelector((state) => state.users);
+
 
   return (
     <GiftedChat
