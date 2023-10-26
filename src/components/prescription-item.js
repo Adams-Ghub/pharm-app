@@ -1,16 +1,32 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-export default function PrescribtionItem({ Id, customer, medicine, date }) {
+export default function PrescriptionItem({ data, receivers }) {
+  const navigation = useNavigation();
+  const receiver = receivers.filter((rec) => data.customerId === rec.id);
+  console.log('receiver:', receiver);
   return (
     <View style={styles.mainContainer}>
       <View style={styles.idDateContainer}>
-        <Text style={styles.idText}>{Id}</Text>
-        <Text style={styles.dateText}>{date}</Text>
+        <Text style={styles.idText}>{data.id}</Text>
+        <Text style={styles.dateText}>{data.date}</Text>
       </View>
-      <View style={styles.infoSection}>
-        <Text style={styles.customerText}>{customer}</Text>
-        <Text style={styles.medincineText}>{medicine}</Text>
+      <View style={styles.infoButtonsContainer}>
+        <View style={styles.infoSection}>
+          <Text style={styles.customerText}>{data.customer}</Text>
+          <Text style={styles.medincineText}>
+            {data.prescription[0].medicine}
+          </Text>
+        </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PharmPrescriptionDetails', { data })}
+          >
+            <Ionicons name="md-eye-outline" size={22} color="#888" />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -45,5 +61,9 @@ const styles = StyleSheet.create({
   },
   medincineText: {
     fontSize: 15,
+  },
+  infoButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
