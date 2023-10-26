@@ -72,7 +72,7 @@ function ClientFeedbackScreen({ navigation }) {
   }, [allUsers]);
 
   useEffect(() => {
-    if (prescriptions.length === 0) {
+    if (prescriptions.length === 0) { 
       dispatch(GetAllPrescription());
     }
   }, [prescriptions]);
@@ -99,11 +99,7 @@ for(let i=0;i<AllIds.length;i++){
   })
 }
 
-
-
-
   let latestPharmacy = [];
-
   myPrescriptions.map((prescription) => {
     allUsers.find((theuser) => {
       if (theuser.id === prescription.pharmacistId) {
@@ -112,7 +108,7 @@ for(let i=0;i<AllIds.length;i++){
     });
   });
 
-  // console.log('latest:', latestPharmacy);
+  console.log('latest:', feedBackList);
 
   return (
     <View style={styles.mainContainer}>
@@ -128,22 +124,22 @@ for(let i=0;i<AllIds.length;i++){
                 onPress={() =>
                   navigation.navigate('chat', {
                     receiver: {
-                      id: user.id || '',
-                      name: user.name,
-                      email: user.email,
+                      id: item.id,
+                      name: item.name,
+                      email: item.email,
                     },
                   })
                 }
               >
                 <ClientFeedbackUser
                   user={item.name}
-                  lastChatDate={item.lastChatDate}
+                  lastChatDate={"20-09-23"}
                   pharmacy={item.pharmacy}
                 />
               </TouchableOpacity>
             );
           }}
-          keyExtractor={(item) => item.index}
+         
         />
       </View>
     </View>
