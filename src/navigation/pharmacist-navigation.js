@@ -6,7 +6,9 @@ import DrawerItem from '../components/drawer-item';
 import Account from '../screens/pharmacist/profile-screen';
 import PrescriptionScreen from '../screens/pharmacist/prescription-screen';
 import AddPrescriptionScreen from '../screens/pharmacist/add-prescription-screen';
+import PharmacyPrescriptionDetails from '../screens/pharmacist/pharmacy-prescription-details'
 import Feedback from '../screens/pharmacist/feedback-screen';
+import PharmacistChat from '../screens/pharmacist/pharmacist-chat'
 import Home from '../screens/pharmacist/pharmacist-welcome-screen';
 import { TouchableOpacity, View, Text, Image } from 'react-native';
 import { Logout } from '../../redux/users/usersActions';
@@ -39,6 +41,33 @@ const PrescriptionNavigatior=()=> {
         name="AddPrescription"
         // options={{ header: () => {} }}
         component={AddPrescriptionScreen}
+      />    
+      <Stack.Screen
+        name="PharmPrescriptionDetails"
+        // options={{ header: () => {} }}
+        component={PharmacyPrescriptionDetails}
+      />    
+    </Stack.Navigator>
+  );
+}
+const FeedbackNavigator=()=> {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        header: () => null,
+      }}
+      initialRouteName="FeedbackScreen"
+      
+    >
+      <Stack.Screen
+        name="FeedbackScreen"
+        // options={{ header: () => {} }}
+        component={Feedback}
+      />    
+      <Stack.Screen
+        name="PharmacistChat"
+        // options={{ header: () => {} }}
+        component={PharmacistChat}
       />    
     </Stack.Navigator>
   );
@@ -206,7 +235,7 @@ function PharmacistNavigation({ navigation }) {
       />
       <Drawer.Screen
         name="Feedback"
-        component={Feedback}
+        component={FeedbackNavigator}
         options={{
           drawerLabel: () => {
             return (
