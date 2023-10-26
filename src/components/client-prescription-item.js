@@ -1,29 +1,50 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { schedulePushNotification,Notification } from '../../notification/notificationLogicFunctions';
+import {
+  schedulePushNotification,
+  Notification,
+} from '../../notification/notificationLogicFunctions';
+import { useNavigation } from '@react-navigation/native';
 
-function ClientPrescriptionItem({ Id, date, pharmacy, medicine }) {
-  const[notify, setNotify]= useState(false)
+function ClientPrescriptionItem({ data }) {
+  const [notify, setNotify] = useState(false);
 
-  const handleSetNotification=(medication)=>{
+  const navigation = useNavigation();
+
+  
+
+  const handleSetNotification = (medication) => {
     schedulePushNotification(medication);
     setNotify(true);
-  }
+    console.log("medication",data.prescription)
+  };
   return (
     <View style={styles.mainContainer}>
       <View style={styles.idDateContainer}>
-        <Text style={styles.idText}>{Id}</Text>
-        <Text style={styles.dateText}>{date}</Text>
+        <Text style={styles.idText}>{data.id}</Text>
+        <Text style={styles.dateText}>{data.date}</Text>
       </View>
       <View style={styles.infoSectionNotificationContainer}>
         <View style={styles.infoSection}>
-          <Text style={styles.customerText}>{pharmacy}</Text>
-          <Text style={styles.medincineText}>{medicine}</Text>
+          <Text style={styles.customerText}>{data.pharmacy}</Text>
+          <Text style={styles.medincineText}>
+            {data.prescription[0].medicine}
+          </Text>
         </View>
-        <View>
-          <TouchableOpacity onPress={()=>handleSetNotification(medicine)}>
-            <Ionicons name="notifications-outline" size={24} color="#888" />
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            onPress={() => handleSetNotification(data.prescription[0].medicine)}
+          >
+            <Ionicons name="notifications-outline" size={22} color="#888" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSetNotification(medicine)}>
+            <Ionicons name="chatbox-outline" size={22} color="#888" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PrescriptionDetails', { data })}
+          >
+            <Ionicons name="md-eye-outline" size={22} color="#888" />
           </TouchableOpacity>
         </View>
       </View>
@@ -62,10 +83,14 @@ const styles = StyleSheet.create({
   medincineText: {
     fontSize: 15,
   },
-  infoSectionNotificationContainer:{
+  infoSectionNotificationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  }
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    gap: 5,
+  },
 });
 
 export default ClientPrescriptionItem;
