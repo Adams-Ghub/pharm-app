@@ -19,13 +19,14 @@ function ClientPrescriptionDetails() {
   };
 
   const handleCreateChat = () => {
-    dispatch(CreateChatRoom( generateChatRoomId(data.customerId, data.pharmacistId)));
-   
+    dispatch(
+      CreateChatRoom(generateChatRoomId(data.customerId, data.pharmacistId))
+    );
   };
 
   return (
     <View style={styles.mainContainer}>
-      <Text>ClientPrescriptionDetails</Text>
+      <Text>Client Prescription Details</Text>
       <View style={styles.buttonIdContainer}>
         <Text>Id: {data.id}</Text>
         <View style={styles.buttonContainer}>
