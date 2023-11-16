@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
-import {useState,useRef,useEffect} from 'react';
-import Constants from 'expo-constants'; 
+import { useState, useRef, useEffect } from 'react';
+import Constants from 'expo-constants';
 import { Audio } from 'expo-av';
 import { Asset } from 'expo-asset';
 
@@ -35,13 +35,9 @@ async function registerForPushNotificationsAsync() {
       bypassDnd: true,
     });
   }
-console.log('token',token)
+  console.log('token', token);
   return token;
-  
 }
-
-
-
 
 let sound = new Audio.Sound();
 
@@ -50,7 +46,7 @@ const playDefaultAlarmSound = async () => {
     await sound.loadAsync(require('./assets/alarm.mp3')); // Replace with the actual filename if different
 
     await sound.playAsync();
-    
+
     setTimeout(async () => {
       await sound.stopAsync();
     }, 6000); // Stop after 6 seconds
@@ -59,35 +55,30 @@ const playDefaultAlarmSound = async () => {
   }
 };
 
-
-
-
-async function schedulePushNotification( prescription) {
+async function schedulePushNotification(prescription) {
   // time = new Date(time.getTime() + 2 * 60000);
-  var days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
 
-  // const minutes = time.getMinutes();
-  const id = await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Dosage time',
-      body: prescription,
-      // sound: ''
-    },
-    trigger: {
-      seconds: 2,
-      repeats: false,
-    },
-  });
-  console.log('notif id on scheduling', id);
-  return id;
+  //const minutes = time.getMinutes();
+
+
+  for(let i=0;i<prescription.medication.FreqNumber;i++){
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Dosage time',
+        body: `${prescription.medication.medicine}: ${prescription.medication.AmtNumber} ${prescription.medication.AmtType}`,
+        // sound: ''
+      },
+      trigger: {
+        seconds: i===0?5:prescription.interval*3600,
+        repeats: false,
+      },
+    });
+    console.log('notif id on scheduling', id);
+    return id;
+  }
+
+  // console.log('notif id on scheduling', id);
+  
 }
 
 function Notification() {
