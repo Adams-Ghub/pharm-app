@@ -12,12 +12,25 @@ function ClientPrescriptionItem({ data }) {
 
   const navigation = useNavigation();
 
-  
-
-  const handleSetNotification = (medication) => {
-    schedulePushNotification(medication);
-    setNotify(true);
-    console.log("medication",data.prescription)
+  const handleSetNotification = (prescription) => {
+    prescription.forEach((element) => {
+      let duration =
+        element.FreqWords.toLowerCase() === 'daily'
+          ? 24
+          : element.FreqWords.toLowerCase() === 'weekly'
+          ? 168
+          : element.FreqWords.toLowerCase() === 'monthly'
+          ? 720
+          : 0;
+        let dossageInterval = duration/element.FreqNumber;
+        let info={medication:element, duration, interval:dossageInterval}
+        schedulePushNotification(info);
+        setNotify(true);
+        console.log('notificationInfo:', info);
+    });
+    
+   
+    
   };
   return (
     <View style={styles.mainContainer}>
@@ -34,7 +47,7 @@ function ClientPrescriptionItem({ data }) {
         </View>
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
-            onPress={() => handleSetNotification(data.prescription[0].medicine)}
+            onPress={() => handleSetNotification(data.prescription)}
           >
             <Ionicons name="notifications-outline" size={22} color="#888" />
           </TouchableOpacity>
