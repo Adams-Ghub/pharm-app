@@ -22,7 +22,7 @@ import Chat from '../screens/client/chat-screen';
 import profileImg from '../../assets/profile.png';
 
 const Stack = createNativeStackNavigator();
-const chatNavigation = () => { 
+const ChatNavigation = () => { 
 
   return (
     <Stack.Navigator
@@ -44,17 +44,17 @@ const chatNavigation = () => {
     </Stack.Navigator>
   );
 };
-const prescriptionNavigation = () => { 
+const PrescriptionNavigation = () => { 
 
   return (
     <Stack.Navigator
       screenOptions={{
         header: () => null,
       }}
-      initialRouteName="Prescription"
+      initialRouteName="PrescriptionScreen"
     >
       <Stack.Screen
-        name="Prescription"
+        name="PrescriptionScreen"
         // options={{ header: () => {} }}
         component={ClientPrescriptionScreen}
       />
@@ -204,7 +204,7 @@ function ClientNavigation({ navigation }) {
       />
       <Drawer.Screen
         name="Prescription"
-        component={prescriptionNavigation}
+        component={PrescriptionNavigation}
         options={{
           drawerLabel: () => {
             return (
@@ -228,7 +228,7 @@ function ClientNavigation({ navigation }) {
       />
       <Drawer.Screen
         name="Feedback"
-        component={chatNavigation}
+        component={ChatNavigation}
         style
         options={{
           drawerLabel: () => {
