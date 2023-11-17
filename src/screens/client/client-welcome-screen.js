@@ -13,16 +13,7 @@ function ClientWelcomeScreen() {
       lastChatDate: '24/09/2023',
       pharmacy: 'Sikwa Pharmacy',
     },
-    // {
-    //   name: 'John Addo',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Abric Pharmacy',
-    // },
-    // {
-    //   name: 'Stella Odum',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: `Asher's Haven Pharmacy`,
-    // },
+    
   ];
 
   Notifications.setNotificationHandler({
@@ -33,23 +24,6 @@ function ClientWelcomeScreen() {
     }),
   });
 
-  const prescription = [
-    {
-      AmtNumber: '1',
-      AmtType: 'handful',
-      FreqNumber: '2',
-      FreqWords: 'Daily',
-      medicine: 'Leopard ointment ',
-    },
-    {
-      AmtNumber: '2',
-      AmtType: 'tablets',
-      FreqNumber: '3',
-      FreqWords: 'Daily',
-      medicine: 'paracetamol',
-    },
-    // Add more customer objects here
-  ];
 
   const { prescriptions } = useSelector((state) => state.prescription);
   const { user } = useSelector((state) => state.users);
@@ -87,7 +61,7 @@ function ClientWelcomeScreen() {
     <View style={styles.principalContainer}>
       <View style={styles.latestDossageSection}>
         <Text style={styles.latestDossageText}>Latest dossage</Text>
-        {sortedPrescription.length === 0||prescription.length===0 ? (
+        {sortedPrescription.length === 0||prescriptions.length===0 ? (
           <Text>No prescriptions yet!</Text>
         ) : (
           <ClientDossageTemplate
