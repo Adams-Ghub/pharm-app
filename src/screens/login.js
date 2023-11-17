@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +22,7 @@ export default function Login({ navigation }) {
   const dispatch = useDispatch();
   const { loginMsg } = useSelector((state) => state.users);
   const [showPassword, setShowPassword] = useState(false);
+  
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -118,6 +120,8 @@ export default function Login({ navigation }) {
   );
 }
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
   },
   headingSection: {
     flex: 0.4,
-    height: '10%',
+    height: height*0.1,
     justifyContent: 'center',
   },
   loginMsg:{
@@ -148,8 +152,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    paddingTop: 90,
-    paddingHorizontal: 20,
+    paddingTop: height * 0.1,
+    paddingHorizontal: width * 0.05,
   },
   emailLabelInputContainer: {
     borderStyle: 'solid',
@@ -161,13 +165,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#565656',
-    paddingLeft: 10,
-    marginBottom: 16,
+    paddingLeft: width*0.02,
+    marginBottom: height*0.025,
   },
   emailInput: {
-    paddingLeft: 10,
+    paddingLeft: width*0.02,
     color: '#050505',
-    fontSize: 18,
+    fontSize: height*0.02,
   },
   passwordLabelInputContainer: {
     borderStyle: 'solid',
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     paddingLeft: 10,
     color: '#050505',
-    fontSize: 18,
+    fontSize: height*0.02,
     width: '90%',
   },
   visibilityPasswordInputContainer: {
@@ -201,13 +205,13 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#fefefe',
-    paddingVertical: 12,
-    fontSize: 18,
+    paddingVertical: height*0.015,
+    fontSize: height*0.023,
     fontWeight: '600',
   },
   forgotPasswordTextContainer: {
-    marginTop: 15,
-    marginBottom: 40,
+    marginTop: height*0.02,
+    marginBottom: height*0.07,
   },
   forgotPasswordTextClickable: {
     flex: 1,
@@ -216,7 +220,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     color: '#03C043',
-    fontSize: 18,
+    fontSize: height*0.022,
     fontWeight: '400',
   },
   noAccountTextsContainer: {
@@ -226,11 +230,11 @@ const styles = StyleSheet.create({
   },
   noAccountText: {
     color: '#565656',
-    fontSize: 18,
+    fontSize: height*0.022,
   },
   createAccountButtonText: {
     color: '#03C043',
-    fontSize: 18,
+    fontSize: height*0.022,
     marginVertical: 2,
   },
   modalContainer: {
@@ -240,9 +244,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalText: {
-    fontSize: 18,
+    fontSize: height*0.02,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: height*0.02,
   },
   modalButton: {
     backgroundColor: '#03C043',
