@@ -69,7 +69,7 @@ async function schedulePushNotification(prescription) {
         // sound: ''
       },
       trigger: {
-        seconds: i===0?5:prescription.interval*3600,
+        seconds: i===0?5:i*prescription.interval*3600,
         repeats: false,
       },
     });
