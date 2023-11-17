@@ -74,11 +74,11 @@ async function schedulePushNotification(prescription) {
       },
     });
     console.log('notif id on scheduling', id);
-    return id;
+   
   }
 
   // console.log('notif id on scheduling', id);
-  
+  return
 }
 
 function Notification() {
