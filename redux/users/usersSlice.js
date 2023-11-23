@@ -32,6 +32,9 @@ const usersSlice = createSlice({
     resetProfileMsg: (state, action) => {
       state.profileMsg = ''; // Update the state correctly here
     },
+    clearSignUpMsg:(state)=>{
+      state.signupMsg = ''; 
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -41,7 +44,7 @@ const usersSlice = createSlice({
       })
       .addCase(RegisterUser.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.signupMsg = 'Account created successfully';
+        state.signupMsg = 'successful';
         state.loading = false;
       })
       .addCase(RegisterUser.rejected, (state, action) => {
@@ -97,5 +100,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { setUser, updateUser, resetProfileMsg } = usersSlice.actions;
+export const { setUser, updateUser, resetProfileMsg,clearSignUpMsg } = usersSlice.actions;
 export default usersSlice.reducer;
