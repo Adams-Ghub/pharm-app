@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RadioButton } from 'react-native-paper';
 import {
@@ -8,10 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import { RegisterUser } from '../../redux/users/usersActions';
 import { MaterialIcons } from '@expo/vector-icons';
-import Modal from 'react-native-modal';
+import { clearSignUpMsg } from '../../redux/users/usersSlice';
 
 export default function Signup({ navigation }) {
   const dispatch = useDispatch();
@@ -23,15 +24,25 @@ export default function Signup({ navigation }) {
   const [registration, setRegistration] = useState('none');
   const [isModalVisible, setModalVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
-  const { user,signupMsg } = useSelector((state) => state.users);
 
-  const handleSignUp =  () => {
-  dispatch(RegisterUser({ email, password, role, name, registration }));
-  
+  const { registered, signupMsg } = useSelector((state) => state.users);
+
+  const handleSignUp = () => {
+    dispatch(RegisterUser({ email, password, role, name, registration }));
   };
 
-
+  useEffect(() => {
+    signupMsg === 'successful'
+      ? Alert.alert('Message', 'Account successfully created', [
+          {
+            text: 'OK', // Button text
+            onPress: () => {
+              dispatch(clearSignUpMsg());
+            },
+          },
+        ])
+      : null;
+  }, [signupMsg]);
 
   const displayRegistrationSection = () => {
     if (checked === 'second') {
@@ -55,9 +66,9 @@ export default function Signup({ navigation }) {
         <Text style={styles.headingText}>Signup</Text>
       </View>
       <ScrollView style={styles.bottomSection}>
-        {
-          signupMsg==='signing up...'?<Text styles={styles.signupMsg}>sigining up...</Text>:null
-        }
+        {signupMsg === 'signing up...' ? (
+          <Text styles={styles.signupMsg}>sigining up...</Text>
+        ) : null}
         <View style={styles.nameLabelInputContainer}>
           <Text style={styles.nameText}>Name</Text>
           <TextInput
@@ -98,7 +109,6 @@ export default function Signup({ navigation }) {
               </Text>
             </TouchableOpacity>
           </View>
-        
         </View>
         <View style={styles.radioButtonsContainer}>
           <View style={styles.regularRadioButtonContainer}>
@@ -156,8 +166,8 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
   },
-  signupMsg:{
-    alignSelf:'center'
+  signupMsg: {
+    alignSelf: 'center',
   },
   headingSection: {
     flex: 0.3,
@@ -235,7 +245,6 @@ const styles = StyleSheet.create({
   },
   visibilityPasswordInputContainer: {
     flexDirection: 'row',
-   
   },
   signupButtonContainer: {
     marginBottom: 20,
@@ -306,7 +315,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
-//modal styling begins
+  //modal styling begins
   modalContainer: {
     backgroundColor: 'white',
     borderRadius: 8,
