@@ -19,47 +19,7 @@ function ClientFeedbackScreen({ navigation }) {
       lastChatDate: '13/09/2023',
       pharmacy: 'Sikwa Pharmacy',
     },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-    // {
-    //   name: 'Ivy Osardu',
-    //   lastChatDate: '24/09/2023',
-    //   pharmacy: 'Sikwa Pharmacy',
-    // },
-  ];
+  ]
 
   const { user, allUsers } = useSelector((state) => state.users);
   const { prescriptions } = useSelector((state) => state.prescription);
